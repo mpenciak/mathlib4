@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Andrew Yang
 -/
 import Mathlib.AlgebraicGeometry.Morphisms.RingHomProperties
+import Mathlib.AlgebraicGeometry.Morphisms.QuasiCompact
 import Mathlib.RingTheory.RingHom.FiniteType
 import Mathlib.RingTheory.Spectrum.Prime.Jacobson
 
@@ -101,5 +102,34 @@ nonrec lemma LocallyOfFiniteType.jacobsonSpace
   algebraize [φ.hom]
   have := PrimeSpectrum.isJacobsonRing_iff_jacobsonSpace.mpr ‹_›
   exact PrimeSpectrum.isJacobsonRing_iff_jacobsonSpace.mp (isJacobsonRing_of_finiteType (A := R))
+
+@[mk_iff]
+class FiniteType (f : X ⟶ Y) : Prop extends LocallyOfFiniteType f, QuasiCompact f where
+
+lemma finiteType_eq :
+    @FiniteType = (@LocallyOfFiniteType ⊓ @QuasiCompact : MorphismProperty Scheme) := by
+  ext X Y f
+  rw [finiteType_iff]
+  rfl
+
+instance : MorphismProperty.RespectsIso @FiniteType := by
+  rw [finiteType_eq]
+  infer_instance
+
+instance : MorphismProperty.IsStableUnderComposition @FiniteType := by
+  rw [finiteType_eq]
+  infer_instance
+
+instance : MorphismProperty.IsStableUnderBaseChange @FiniteType := by
+  rw [finiteType_eq]
+  infer_instance
+
+instance : IsLocalAtTarget @FiniteType := by
+  rw [finiteType_eq]
+  infer_instance
+
+theorem finiteType_comp {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z)
+    [hf : FiniteType f] [hg : FiniteType g] : FiniteType (f ≫ g) :=
+  MorphismProperty.comp_mem _ f g hf hg
 
 end AlgebraicGeometry
