@@ -26,16 +26,15 @@ public meta section
 
 namespace Lean.Elab
 
-variable {m : Type → Type} [Monad m] [MonadOptions m] [MonadRef m] [MonadInfoTree m]
-
 /-- unset the option specified by id -/
-def elabUnsetOption (id : Syntax) : m Options := do
+def elabUnsetOption (id : Syntax) : Command.CommandElabM Options := do
   -- We include the first argument (the keyword) for position information in case `id` is `missing`.
   addCompletionInfo <| CompletionInfo.option (← getRef)
   unsetOption id.getId.eraseMacroScopes
 where
   /-- unset the given option name -/
-  unsetOption (optionName : Name) : m Options := return (← getOptions).erase optionName
+  unsetOption (optionName : Name) : Command.CommandElabM Options :=
+    return (← getOptions).insert optionName (← getOptionDefaultValue optionName)
 
 namespace Command
 
