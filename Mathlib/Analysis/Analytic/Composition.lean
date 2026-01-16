@@ -1219,7 +1219,7 @@ def sigmaEquivSigmaPi (n : ℕ) :
       exact (Fin.heq_fun_iff A (α := List ℕ)).2 fun i => rfl
     · have B : Composition.length (Composition.gather a b) = List.length b.blocks :=
         Composition.length_gather _ _
-      conv_rhs => rw [← ofFn_getElem b.blocks]
+      conv_rhs => rw [← ofFn_getElem (xs := b.blocks)]
       congr 1
       refine (Fin.heq_fun_iff B).2 fun i => ?_
       rw [sigmaCompositionAux, Composition.length, List.getElem_map_rev List.length,
