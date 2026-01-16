@@ -283,7 +283,7 @@ theorem mk_le_mk_iff_lt (ha : a ≠ 1) : mk a ≤ mk b ↔ ∃ n, |b|ₘ < |a|�
 which is also the largest class. -/
 @[to_additive /-- 0 is in its own class (see `ArchimedeanClass.mk_eq_top_iff`),
 which is also the largest class. -/]
-instance : OrderTop (MulArchimedeanClass M) where
+noncomputable instance : OrderTop (MulArchimedeanClass M) where
   top := mk 1
   le_top A := by
     induction A using ind with | mk a
@@ -291,7 +291,7 @@ instance : OrderTop (MulArchimedeanClass M) where
     exact ⟨1, by simp⟩
 
 @[to_additive]
-instance : Inhabited (MulArchimedeanClass M) := ⟨⊤⟩
+noncomputable instance : Inhabited (MulArchimedeanClass M) := ⟨⊤⟩
 
 @[to_additive (attr := simp)]
 theorem mk_one : mk 1 = (⊤ : MulArchimedeanClass M) := rfl

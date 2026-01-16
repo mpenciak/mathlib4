@@ -1009,7 +1009,7 @@ end CleanupLemmas
 section LinearMaps
 
 /-- The real part in an `RCLike` field, as a linear map. -/
-def reLm : K →ₗ[ℝ] ℝ :=
+noncomputable def reLm : K →ₗ[ℝ] ℝ :=
   { re with map_smul' := smul_re }
 
 @[simp, rclike_simps]
@@ -1035,7 +1035,7 @@ theorem continuous_re : Continuous (re : K → ℝ) :=
   reCLM.continuous
 
 /-- The imaginary part in an `RCLike` field, as a linear map. -/
-def imLm : K →ₗ[ℝ] ℝ :=
+noncomputable def imLm : K →ₗ[ℝ] ℝ :=
   { im with map_smul' := smul_im }
 
 @[simp, rclike_simps]

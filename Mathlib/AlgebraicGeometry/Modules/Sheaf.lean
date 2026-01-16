@@ -46,7 +46,7 @@ instance : Category X.Modules where
 instance : Preadditive X.Modules :=
   inferInstanceAs (Preadditive (SheafOfModules.{u} X.ringCatSheaf))
 
-instance : Abelian X.Modules :=
+noncomputable instance : Abelian X.Modules :=
   inferInstanceAs (Abelian (SheafOfModules.{u} X.ringCatSheaf))
 
 variable (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ T)
