@@ -1,10 +1,14 @@
+/-
+Copyright (c) 2023 Yaël Dillies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yaël Dillies
+-/
 module
 
-public import Mathlib.Algebra.Group.ModEq
-public import Mathlib.Algebra.Field.ModEq
-public import Mathlib.GroupTheory.QuotientGroup.ModEq
-public import Mathlib.Data.Nat.ModEq
-public import Mathlib.Data.Int.ModEq
+public import Mathlib.Algebra.Group.Hom.Defs
+import Mathlib.Algebra.Group.Torsion
+import Mathlib.Tactic.TermCongr
+import Mathlib.Tactic.Use
 
 /-!
 # Equality modulo an element
@@ -31,7 +35,7 @@ and it is given with the use case of natural numbers in mind.
 
 public section
 
-assert_not_exists Module
+assert_not_exists Module IsOrderedMonoid Function.support
 
 namespace AddCommGroup
 
@@ -262,7 +266,7 @@ end ModEq
 @[simp]
 theorem zsmul_modEq_zsmul [IsAddTorsionFree G] (hn : z ≠ 0) :
     z • a ≡ z • b [PMOD z • p] ↔ a ≡ b [PMOD p] := by
-  simp [modEq_iff_zsmul, ← zsmul_sub, zsmul_comm _ z, zsmul_right_inj hn]
+  simp [modEq_iff_zsmul, ← zsmul_sub, zsmul_comm, zsmul_right_inj hn]
 
 alias ⟨ModEq.zsmul_cancel, _⟩ := zsmul_modEq_zsmul
 
@@ -323,15 +327,6 @@ theorem modEq_zero_iff_eq_zsmul : a ≡ 0 [PMOD p] ↔ ∃ z : ℤ, a = z • p 
 theorem not_modEq_iff_ne_add_zsmul : ¬a ≡ b [PMOD p] ↔ ∀ z : ℤ, b ≠ a + z • p := by
   rw [modEq_iff_eq_add_zsmul, not_exists]
 
-theorem modEq_iff_eq_mod_zmultiples : a ≡ b [PMOD p] ↔ (a : G ⧸ AddSubgroup.zmultiples p) = b := by
-  rw [modEq_comm]
-  simp_rw [modEq_iff_eq_add_zsmul, QuotientAddGroup.eq_iff_sub_mem, AddSubgroup.mem_zmultiples_iff,
-    eq_sub_iff_add_eq', eq_comm]
-
-theorem not_modEq_iff_ne_mod_zmultiples :
-    ¬a ≡ b [PMOD p] ↔ (a : G ⧸ AddSubgroup.zmultiples p) ≠ b :=
-  modEq_iff_eq_mod_zmultiples.not
-
 /-- If `a ≡ b [PMOD p]`, then mod `n • p` there are `n` cases. -/
 theorem modEq_nsmul_cases (n : ℕ) (hn : n ≠ 0) :
     a ≡ b [PMOD p] ↔ ∃ i < n, a ≡ b + i • p [PMOD (n • p)] := by
@@ -354,71 +349,4 @@ alias ⟨ModEq.nsmul_cases, _⟩ := AddCommGroup.modEq_nsmul_cases
 
 end AddCommGroup
 
-@[simp]
-theorem modEq_iff_intModEq {a b z : ℤ} : a ≡ b [PMOD z] ↔ a ≡ b [ZMOD z] := by
-  simp [modEq_iff_zsmul, dvd_iff_exists_eq_mul_left, Int.modEq_iff_dvd, eq_comm]
-
-@[deprecated (since := "2026-01-13")]
-alias modEq_iff_int_modEq := modEq_iff_intModEq
-
-@[simp]
-theorem modEq_iff_natModEq {a b n : ℕ} : a ≡ b [PMOD n] ↔ a ≡ b [MOD n] := by
-  constructor
-  · rw [modEq_iff_nsmul, Nat.ModEq]
-    rintro ⟨k, l, h⟩
-    simpa using congr($h % n)
-  · rw [Nat.ModEq]
-    intro h
-    rw [← Nat.div_add_mod' a n, ← Nat.div_add_mod' b n, ← Nat.nsmul_eq_mul, ← Nat.nsmul_eq_mul, h]
-    exact nsmul_add_modEq _ |>.trans (nsmul_add_modEq _).symm
-
-section AddCommMonoidWithOne
-variable {M : Type*} [AddCommMonoidWithOne M]
-
-theorem ModEq.natCast {a b n : ℕ} (h : a ≡ b [MOD n]) : a ≡ b [PMOD (n : M)] := by
-  rw [← modEq_iff_natModEq] at h
-  exact h.map (Nat.castAddMonoidHom M)
-
-@[simp, norm_cast]
-theorem natCast_modEq_natCast [CharZero M] {a b n : ℕ} : a ≡ b [PMOD (n : M)] ↔ a ≡ b [MOD n] := by
-  simpa using map_modEq_iff (Nat.castAddMonoidHom M) Nat.cast_injective
-
-alias ⟨_root_.Nat.ModEq.of_natCast, _⟩ := natCast_modEq_natCast
-
-end AddCommMonoidWithOne
-
-section AddCommGroupWithOne
-variable {G : Type*} [AddCommGroupWithOne G] [CharZero G]
-
-@[simp, norm_cast]
-theorem intCast_modEq_intCast {a b z : ℤ} : a ≡ b [PMOD (z : G)] ↔ a ≡ b [PMOD z] := by
-  simp_rw [modEq_iff_zsmul', ← Int.cast_mul_eq_zsmul_cast]
-  norm_cast
-
-@[simp, norm_cast]
-lemma intCast_modEq_intCast' {a b : ℤ} {n : ℕ} : a ≡ b [PMOD (n : G)] ↔ a ≡ b [PMOD (n : ℤ)] := by
-  simpa using intCast_modEq_intCast (G := G) (z := n)
-
-alias ⟨ModEq.of_intCast, ModEq.intCast⟩ := intCast_modEq_intCast
-
-end AddCommGroupWithOne
-
-section DivisionSemiring
-variable {K : Type*} [DivisionSemiring K] {a b c p : K}
-
-@[simp] lemma div_modEq_div (hc : c ≠ 0) : a / c ≡ b / c [PMOD p] ↔ a ≡ b [PMOD (p * c)] := by
-  simp [modEq_iff_nsmul, add_div' _ _ _ hc, div_left_inj' hc, mul_assoc]
-
-@[simp] lemma mul_modEq_mul_right (hc : c ≠ 0) : a * c ≡ b * c [PMOD p] ↔ a ≡ b [PMOD (p / c)] := by
-  rw [div_eq_mul_inv, ← div_modEq_div (inv_ne_zero hc), div_inv_eq_mul, div_inv_eq_mul]
-
-end DivisionSemiring
-
-section Semifield
-variable {K : Type*} [Semifield K] {a b c p : K}
-
-@[simp] lemma mul_modEq_mul_left (hc : c ≠ 0) : c * a ≡ c * b [PMOD p] ↔ a ≡ b [PMOD (p / c)] := by
-  simp [mul_comm c, hc]
-
-end Semifield
 end AddCommGroup
