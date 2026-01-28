@@ -45,6 +45,7 @@ theorem minimalPeriod_eq_prime_iff {p : ℕ} [hp : Fact p.Prime] :
 
 theorem minimalPeriod_eq_sInf_n_pos_IsPeriodicPt :
     minimalPeriod f x = sInf { n > 0 | IsPeriodicPt f n x } := by
+  set_option backward.dsimp.instances true in
   dsimp [minimalPeriod, periodicPts, sInf]
   grind
 

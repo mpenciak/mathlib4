@@ -184,6 +184,7 @@ equivalence `C ≌ Transported e`. -/
 abbrev equivalenceTransported : C ≌ Transported e := e
 
 instance : (equivalenceTransported e).inverse.Monoidal := by
+  set_option backward.dsimp.instances true in
   dsimp only [Transported.instMonoidalCategory]
   infer_instance
 

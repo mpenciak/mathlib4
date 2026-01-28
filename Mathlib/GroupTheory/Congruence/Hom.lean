@@ -52,6 +52,7 @@ def mkMulHom (c : Con M) : MulHom M c.Quotient where
 def ker (f : F) : Con M where
   toSetoid := Setoid.ker f
   mul' h1 h2 := by
+    set_option backward.dsimp.instances true in
     dsimp [Setoid.ker, onFun] at *
     rw [map_mul, h1, h2, map_mul]
 
