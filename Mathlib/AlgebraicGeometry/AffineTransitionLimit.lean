@@ -832,8 +832,7 @@ lemma exists_appTop_π_eq_of_isLimit [∀ {i j} (f : i ⟶ j), IsAffineHom (D.ma
         ((U y).2.preimage (D.map fjy).continuous))
       ((D.map fjx).app (U x) (t x) |_ (D.map fjx ⁻¹ᵁ U x ⊓ D.map fjy ⁻¹ᵁ U y) -
         (D.map fjy).app (U y) (t y) |_ (D.map fjx ⁻¹ᵁ U x ⊓ D.map fjy ⁻¹ᵁ U y)) (by
-      set_option backward.dsimp.instances true in
-      dsimp [TopCat.Presheaf.restrictOpen, TopCat.Presheaf.restrict]
+      dsimp +instances [TopCat.Presheaf.restrictOpen, TopCat.Presheaf.restrict]
       simp only [map_sub, sub_eq_zero, ← ConcreteCategory.comp_apply,
         Scheme.Hom.app_eq_appLE, Scheme.Hom.appLE_map, Scheme.Hom.appLE_comp_appLE,
         Cone.w]

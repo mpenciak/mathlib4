@@ -96,8 +96,7 @@ instance : MvQPF (Pi F) where
   repr := @Pi.repr _ _ F _
   abs_repr := by
     rintro α f
-    set_option backward.dsimp.instances true in
-    simp only [Pi.abs, Pi.repr, Sigma.eta, abs_repr]
+    simp +instances only [Pi.abs, Pi.repr, Sigma.eta, abs_repr]
   abs_map := by rintro α β f ⟨x, g⟩; simp only [Pi.abs, (· <$$> ·), ← abs_map]; rfl
 
 end Pi

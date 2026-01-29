@@ -157,7 +157,7 @@ def abelianizeAdj : abelianize ⊣ forget₂ CommGrpCat.{u} GrpCat.{u} :=
       homEquiv_naturality_left_symm := by
         intros
         ext
-        set_option backward.dsimp.instances true in simp only
+        simp +instances only
         apply Eq.symm
         apply Abelianization.lift_unique
         intros

@@ -224,8 +224,7 @@ lemma replaceEDist_eq : m.replaceEDist d hd = m := by ext : 2; exact hd
 
 -- Check uniformity is unchanged
 example : (replaceEDist m d hd).toUniformSpace = m.toUniformSpace := by
-  set_option backward.dsimp.instances true in
-  dsimp [replaceEDist]
+  dsimp +instances [replaceEDist]
 
 end PseudoEMetricSpace
 
@@ -251,13 +250,11 @@ lemma replaceDist_eq : m.replaceDist d hd = m := by ext : 2; exact hd
 
 -- Check uniformity is unchanged
 example : (replaceDist m d hd).toUniformSpace = m.toUniformSpace := by
-  set_option backward.dsimp.instances true in
-  dsimp [replaceDist]
+  dsimp +instances [replaceDist]
 
 -- Check Bornology is unchanged
 example : (replaceDist m d hd).toBornology = m.toBornology := by
-  set_option backward.dsimp.instances true in
-  dsimp [replaceDist]
+  dsimp +instances [replaceDist]
 
 end PseudoMetricSpace
 
