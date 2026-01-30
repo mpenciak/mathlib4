@@ -840,7 +840,7 @@ theorem congrOrderIso_symm (e : MulArchimedeanClass M ≃o MulArchimedeanClass N
 `FiniteMulArchimedeanClass M` plus `⊤`. -/
 @[to_additive /-- The upper set in `ArchimedeanClass M` consisting of an upper set in
 `FiniteArchimedeanClass M` plus `⊤`. -/]
-def toUpperSetMulArchimedeanClass :
+noncomputable def toUpperSetMulArchimedeanClass :
     UpperSet (FiniteMulArchimedeanClass M) ↪o UpperSet (MulArchimedeanClass M) :=
   .ofStrictMono (fun s ↦
     { carrier := {a | ∀ h : a ≠ ⊤, ⟨a, h⟩ ∈ s}
@@ -853,7 +853,7 @@ def toUpperSetMulArchimedeanClass :
 `FiniteMulArchimedeanClass M` is a subgroup. -/
 @[to_additive /-- The `ArchimedeanClass.subsemigroup` associated to an upper set in
 `FiniteArchimedeanClass M` is a subgroup. -/]
-def subgroup (s : UpperSet (FiniteMulArchimedeanClass M)) : Subgroup M where
+noncomputable def subgroup (s : UpperSet (FiniteMulArchimedeanClass M)) : Subgroup M where
   __ := MulArchimedeanClass.subsemigroup (toUpperSetMulArchimedeanClass s)
   one_mem' h := (h rfl).elim
   inv_mem' := by simp [MulArchimedeanClass.subsemigroup]
@@ -880,12 +880,13 @@ theorem mem_subgroup_iff : a ∈ subgroup s ↔ ∀ h : a ≠ 1, mk a h ∈ s :=
 /-- An open ball defined by `FiniteMulArchimedeanClass.subgroup` of `UpperSet.Ioi c`. -/
 @[to_additive
 /--An open ball defined by `FiniteArchimedeanClass.addSubgroup` of `UpperSet.Ioi c`. -/]
-abbrev ballSubgroup (c : FiniteMulArchimedeanClass M) := subgroup (UpperSet.Ioi c)
+noncomputable abbrev ballSubgroup (c : FiniteMulArchimedeanClass M) := subgroup (UpperSet.Ioi c)
 
 /-- A closed ball defined by `FiniteMulArchimedeanClass.subgroup` of `UpperSet.Ici c`. -/
 @[to_additive
 /-- A closed ball defined by `FiniteArchimedeanClass.addSubgroup` of `UpperSet.Ici c`. -/]
-abbrev closedBallSubgroup (c : FiniteMulArchimedeanClass M) := subgroup (UpperSet.Ici c)
+noncomputable abbrev closedBallSubgroup (c : FiniteMulArchimedeanClass M) :=
+  subgroup (UpperSet.Ici c)
 
 @[to_additive]
 theorem mem_ballSubgroup_iff {a : M} {c : FiniteMulArchimedeanClass M} :

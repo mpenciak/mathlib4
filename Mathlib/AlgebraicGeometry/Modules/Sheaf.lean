@@ -45,12 +45,104 @@ instance : Category X.Modules where
   Hom := Modules.Hom
   __ := inferInstanceAs (Category (SheafOfModules.{u} X.ringCatSheaf))
 
-instance : Abelian X.Modules := inferInstanceAs (Abelian (SheafOfModules.{u} X.ringCatSheaf))
+noncomputable instance : Abelian X.Modules :=
+  inferInstanceAs (Abelian (SheafOfModules.{u} X.ringCatSheaf))
 instance : HasLimits X.Modules := inferInstanceAs (HasLimits (SheafOfModules X.ringCatSheaf))
 instance : HasColimits X.Modules := inferInstanceAs (HasColimits (SheafOfModules X.ringCatSheaf))
 
-noncomputable instance : Abelian X.Modules :=
-  inferInstanceAs (Abelian (SheafOfModules.{u} X.ringCatSheaf))
+section Functor
+
+variable (X) in
+/-- The forgetful functor from `𝒪ₓ`-modules to presheaves of modules.
+This is mostly useful to transport results from (pre)sheaves of modules to `𝒪ₓ`-modules and
+usually shouldn't be used directly when working with actual `𝒪ₓ`-modules. -/
+def toPresheafOfModules : X.Modules ⥤ X.PresheafOfModules := SheafOfModules.forget _
+
+/-- The forgetful functor from `𝒪ₓ`-modules to presheaves of modules is fully faithful. -/
+def fullyFaithfulToPresheafOfModules : (Modules.toPresheafOfModules X).FullyFaithful :=
+  SheafOfModules.fullyFaithfulForget _
+
+instance : (toPresheafOfModules X).Full := fullyFaithfulToPresheafOfModules.full
+instance : (toPresheafOfModules X).Faithful := fullyFaithfulToPresheafOfModules.faithful
+instance : (toPresheafOfModules X).IsRightAdjoint :=
+  (PresheafOfModules.sheafificationAdjunction (𝟙 X.ringCatSheaf.val)).isRightAdjoint
+
+variable (X) in
+/-- The forgetful functor from `𝒪ₓ`-modules to presheaves of abelian groups. -/
+noncomputable def toPresheaf : X.Modules ⥤ TopCat.Presheaf Ab X :=
+  toPresheafOfModules X ⋙ PresheafOfModules.toPresheaf _
+
+instance : (toPresheaf X).Faithful := .comp _ (PresheafOfModules.toPresheaf _)
+instance : PreservesLimits (toPresheaf X) := comp_preservesLimits _ (PresheafOfModules.toPresheaf _)
+instance : (toPresheaf X).ReflectsIsomorphisms :=
+  reflectsIsomorphisms_comp _ (PresheafOfModules.toPresheaf _)
+
+end Functor
+
+variable {M N K : X.Modules} {φ : M ⟶ N} {U V : X.Opens}
+
+section Presheaf
+
+/-- The underlying abelian presheaf of an `𝒪ₓ`-module. -/
+noncomputable def presheaf (M : X.Modules) : TopCat.Presheaf Ab X := M.1.presheaf
+
+/-- Notation for sections of a presheaf of module. -/
+scoped[AlgebraicGeometry] notation3 "Γ(" M ", " U ")" => (Scheme.Modules.presheaf M).obj (.op U)
+
+instance : Module Γ(X, U) Γ(M, U) := (M.val.obj (.op U)).isModule
+
+variable (M) in
+@[simp] lemma map_smul (i : U ⟶ V) (r : Γ(X, V)) (x : Γ(M, V)) :
+    M.presheaf.map i.op (r • x) = X.presheaf.map i.op r • M.presheaf.map i.op x :=
+  M.val.map_smul _ _ _
+
+/-- The underlying map between abelian presheaves of a morphism of `𝒪ₓ`-modules. -/
+noncomputable def Hom.mapPresheaf (φ : M ⟶ N) : M.presheaf ⟶ N.presheaf :=
+  (toPresheaf X).map φ
+
+/-- The application of a morphism of `𝒪ₓ`-modules to sections. -/
+def Hom.app (φ : M ⟶ N) (U : X.Opens) : Γ(M, U) ⟶ Γ(N, U) :=
+  (forget₂ _ _).map (φ.val.app (.op U))
+
+@[simp] lemma mapPresheaf_app (φ : M ⟶ N) (U) : φ.mapPresheaf.app U = φ.app U.unop := rfl
+
+@[simp]
+lemma Hom.app_smul (φ : M ⟶ N) (r : Γ(X, U)) (x : Γ(M, U)) :
+    φ.app U (r • x) = r • φ.app U x :=
+  (φ.val.app (.op U)).hom.map_smul r x
+
+@[simp] lemma Hom.add_app (φ ψ : M ⟶ N) : (φ + ψ).app U = φ.app U + ψ.app U := rfl
+@[simp] lemma Hom.sub_app (φ ψ : M ⟶ N) : (φ - ψ).app U = φ.app U - ψ.app U := rfl
+@[simp] lemma Hom.zero_app : (0 : M ⟶ N).app U = 0 := rfl
+@[simp] lemma Hom.id_app (M : X.Modules) : (𝟙 M :).app U = 𝟙 _ := rfl
+@[simp] lemma Hom.comp_app (φ : M ⟶ N) (ψ : N ⟶ K) : (φ ≫ ψ).app U = φ.app U ≫ ψ.app U := rfl
+
+@[ext]
+lemma hom_ext (f g : M ⟶ N) (H : ∀ U, f.app U = g.app U) : f = g := by
+  apply SheafOfModules.hom_ext
+  ext U x
+  exact congr($(H U.unop) x)
+
+lemma isSheaf (M : X.Modules) : M.presheaf.IsSheaf := SheafOfModules.isSheaf M
+
+@[simp] lemma toPresheaf_obj : (toPresheaf X).obj M = M.presheaf := rfl
+@[simp] lemma toPresheaf_map : (toPresheaf X).map φ = φ.mapPresheaf := rfl
+
+lemma Hom.isIso_iff_isIso_app {M N : X.Modules} {φ : M ⟶ N} :
+    IsIso φ ↔ ∀ U, IsIso (φ.app U) := by
+  rw [← isIso_iff_of_reflects_iso _ (toPresheaf X), NatTrans.isIso_iff_isIso_app]
+  simp [Opposite.op_surjective.forall]
+
+instance [IsIso φ] : IsIso (φ.app U) := Hom.isIso_iff_isIso_app.mp ‹_› _
+
+@[simp, push ←]
+lemma inv_app [IsIso φ] : (inv φ).app U = inv (φ.app U) := by
+  apply IsIso.eq_inv_of_hom_inv_id
+  simp [← Hom.comp_app]
+
+end Presheaf
+
+noncomputable section Functorial
 
 variable (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ T)
 
