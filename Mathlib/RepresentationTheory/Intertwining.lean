@@ -182,7 +182,7 @@ instance : Algebra A (IntertwiningMap ρ ρ) :=
 @[simp] lemma algebraMap_apply (a : A) : algebraMap A (IntertwiningMap ρ ρ) a = a • 1 := rfl
 
 /-- Intertwining maps from `ρ` to itself are the same as `A[G]`-linear endomorphisms. -/
-def equivAlgEnd :
+noncomputable def equivAlgEnd :
     IntertwiningMap ρ ρ ≃ₐ[A] Module.End A[G] ρ.asModule :=
   AlgEquiv.ofLinearEquiv
     (equivLinearMapAsModule ρ ρ)
