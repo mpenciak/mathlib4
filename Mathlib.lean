@@ -4977,6 +4977,7 @@ public import Mathlib.MeasureTheory.Function.ConditionalExpectation.Indicator
 public import Mathlib.MeasureTheory.Function.ConditionalExpectation.PullOut
 public import Mathlib.MeasureTheory.Function.ConditionalExpectation.Real
 public import Mathlib.MeasureTheory.Function.ConditionalExpectation.Unique
+public import Mathlib.MeasureTheory.Function.ConditionalLExpectation
 public import Mathlib.MeasureTheory.Function.ContinuousMapDense
 public import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
 public import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
@@ -6610,11 +6611,6 @@ public import Mathlib.Tactic.Bound.Attribute
 public import Mathlib.Tactic.Bound.Init
 public import Mathlib.Tactic.ByCases
 public import Mathlib.Tactic.ByContra
-public import Mathlib.Tactic.CC
-public import Mathlib.Tactic.CC.Addition
-public import Mathlib.Tactic.CC.Datatypes
-public import Mathlib.Tactic.CC.Lemmas
-public import Mathlib.Tactic.CC.MkProof
 public import Mathlib.Tactic.CancelDenoms
 public import Mathlib.Tactic.CancelDenoms.Core
 public import Mathlib.Tactic.Cases
