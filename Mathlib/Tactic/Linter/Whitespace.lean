@@ -118,10 +118,10 @@ Produces a `FormatError` from the input data.  It expects
 In particular, it extracts the position information within the string, both as number of characters
 and as `String.Pos`.
 -/
-def mkFormatError (ls ms : String.Slice) (msg : String) (length : Nat := 1) : FormatError where
-  srcNat := ls.positions.length
+def mkFormatError (ls ms : String) (msg : String) (length : Nat := 1) : FormatError where
+  srcNat := ls.length
   srcEndPos := ls.rawEndPos
-  fmtPos := ms.positions.length
+  fmtPos := ms.length
   msg := msg
   length := length
   srcStartPos := ls.rawEndPos
@@ -164,7 +164,7 @@ def parallelScanAux (as : Array FormatError) (L M : String) : Array FormatError 
     parallelScanAux as (L.drop 3).copy (M.drop 3).copy else
   if L.take 2 == "--".toSlice then
     let newL := L.dropWhile (· != '\n')
-    let diff := L.positions.length - newL.positions.length
+    let diff := L.length - newL.copy.length
     -- Assumption: if `L` contains an embedded inline comment, so does `M`
     -- (modulo additional whitespace).
     -- This holds because we call this function with `M` being a pretty-printed version of `L`.
