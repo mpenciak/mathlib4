@@ -28,6 +28,7 @@ variable {α β : Type*} [DecidableEq β]
 
 /-- If scalar multiplication by elements of `α` sends `(0 : β)` to zero,
 then the same is true for `(0 : Finset β)`. -/
+@[instance_reducible]
 protected def smulZeroClass [Zero β] [SMulZeroClass α β] : SMulZeroClass α (Finset β) :=
   coe_injective.smulZeroClass ⟨_, coe_zero⟩ coe_smul_finset
 

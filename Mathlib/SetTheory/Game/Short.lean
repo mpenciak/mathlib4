@@ -93,6 +93,7 @@ attribute [class] Short
 /-- Extracting the `Fintype` instance for the indexing type for Left's moves in a short game.
 This is an unindexed typeclass, so it can't be made a global instance.
 -/
+@[instance_reducible]
 def fintypeLeft {α β : Type u} {L : α → PGame.{u}} {R : β → PGame.{u}} [S : Short ⟨α, β, L, R⟩] :
     Fintype α := by cases S; assumption
 
@@ -104,6 +105,7 @@ instance fintypeLeftMoves (x : PGame) [S : Short x] : Fintype x.LeftMoves := by
 /-- Extracting the `Fintype` instance for the indexing type for Right's moves in a short game.
 This is an unindexed typeclass, so it can't be made a global instance.
 -/
+@[instance_reducible]
 def fintypeRight {α β : Type u} {L : α → PGame.{u}} {R : β → PGame.{u}} [S : Short ⟨α, β, L, R⟩] :
     Fintype β := by cases S; assumption
 

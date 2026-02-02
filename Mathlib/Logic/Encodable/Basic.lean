@@ -88,6 +88,7 @@ theorem surjective_decode_iget (α : Type*) [Encodable α] [Inhabited α] :
 
 /-- An encodable type has decidable equality. Not set as an instance because this is usually not the
 best way to infer decidability. -/
+@[instance_reducible]
 def decidableEqOfEncodable (α) [Encodable α] : DecidableEq α
   | _, _ => decidable_of_iff _ encode_inj
 

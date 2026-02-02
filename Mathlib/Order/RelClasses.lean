@@ -210,6 +210,7 @@ theorem fix_eq {C : α → Sort*} (F : ∀ x : α, (∀ y : α, r y x → C y) �
   wf.fix_eq F
 
 /-- Derive a `WellFoundedRelation` instance from an `isWellFounded` instance. -/
+@[instance_reducible]
 def toWellFoundedRelation : WellFoundedRelation α :=
   ⟨r, IsWellFounded.wf⟩
 

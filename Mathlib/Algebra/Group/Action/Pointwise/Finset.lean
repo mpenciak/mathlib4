@@ -89,7 +89,7 @@ protected def mulAction [DecidableEq α] [Monoid α] [MulAction α β] :
 
 /-- A multiplicative action of a monoid on a type `β` gives a multiplicative action on `Finset β`.
 -/
-@[to_additive
+@[to_additive (attr := instance_reducible)
       /-- An additive action of an additive monoid on a type `β` gives an additive action
       on `Finset β`. -/]
 protected def mulActionFinset [Monoid α] [MulAction α β] : MulAction α (Finset β) :=

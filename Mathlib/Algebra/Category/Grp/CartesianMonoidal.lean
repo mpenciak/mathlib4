@@ -114,6 +114,7 @@ namespace AddCommGrpCat
 
 /-- We choose `AddCommGrpCat.of (G × H)` as the product of `G` and `H` and
 `AddCommGrpCat.of PUnit` as the terminal object. -/
+@[instance_reducible]
 noncomputable def cartesianMonoidalCategory : CartesianMonoidalCategory AddCommGrpCat.{u} :=
   .ofChosenFiniteProducts ⟨_, (isZero_of_subsingleton (AddCommGrpCat.of PUnit.{u + 1})).isTerminal⟩
     fun G H ↦ binaryProductLimitCone G H
