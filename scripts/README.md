@@ -46,6 +46,22 @@ to learn about it as well!
   names used within namespaces (e.g., `lt_iff_val_lt_val`). Only processes files that exist in the
   current repository. Safe to run multiple times; processes all warnings in a single pass.
   Usage: `python3 scripts/fix_deprecations.py`
+- `fix_instance_reducible.py`
+  Automatically fixes `instance_reducible` warnings by adding `@[instance_reducible]` to instance
+  definitions. Runs `lake build` to collect warnings, locates each instance's definition, and adds
+  the required attribute. By default, only processes `local instance` and `scoped instance`
+  declarations. Processes files in reverse build order to minimize rebuilds. Verifies each fix by
+  rebuilding.
+  Usage: `python3 scripts/fix_instance_reducible.py [FILE] [--dry-run] [-n N] [--global] [--only FILE] [--no-verify]`
+  Arguments:
+  - `FILE`: Build up to this file and fix warnings in it and its dependencies
+  Flags:
+  - `--dry-run`: Show what would change without modifying files
+  - `-n N`: Process only last N warnings (useful for debugging)
+  - `--only FILE`: Only process warnings from the specified file (not dependencies)
+  - `--global`: Also process regular (non-local/scoped) instance warnings
+  - `--global-only`: Only process global instance warnings
+  - `--no-verify`: Skip build verification after each fix
 - `add_deprecations.sh` is a text-based script that automatically adds deprecation statements.
   It assumes that the only difference between master and the current status of the PR consists
   of renames. More precisely, any change on a line that contains a declaration name
