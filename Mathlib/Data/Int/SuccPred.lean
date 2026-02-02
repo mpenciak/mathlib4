@@ -22,7 +22,7 @@ open Function Order
 namespace Int
 
 -- so that Lean reads `Int.succ` through `SuccOrder.succ`
-@[instance] abbrev instSuccOrder : SuccOrder ℤ :=
+instance instSuccOrder : SuccOrder ℤ :=
   { SuccOrder.ofSuccLeIff succ fun {_ _} => Iff.rfl with succ := succ }
 
 instance instSuccAddOrder : SuccAddOrder ℤ := ⟨fun _ => rfl⟩

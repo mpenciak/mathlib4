@@ -262,11 +262,16 @@ def find_definition(instance_name, warning_file):
     namespace = parts[0] if len(parts) > 1 else None
 
     # Patterns to search for the local name
+    # Only def declarations need @[instance_reducible] - abbrev is already reducible,
+    # and instance declarations don't need it
+    # Handle all orderings of protected/noncomputable
     def make_patterns(name):
         return [
-            rf'^\s*(protected\s+)?def\s+{re.escape(name)}\b',
-            rf'^\s*abbrev\s+{re.escape(name)}\b',
-            rf'^\s*noncomputable\s+(protected\s+)?def\s+{re.escape(name)}\b',
+            rf'^\s*def\s+{re.escape(name)}\b',
+            rf'^\s*protected\s+def\s+{re.escape(name)}\b',
+            rf'^\s*noncomputable\s+def\s+{re.escape(name)}\b',
+            rf'^\s*protected\s+noncomputable\s+def\s+{re.escape(name)}\b',
+            rf'^\s*noncomputable\s+protected\s+def\s+{re.escape(name)}\b',
         ]
 
     patterns = make_patterns(local_name)
@@ -301,6 +306,12 @@ def find_definition(instance_name, warning_file):
     result = find_to_additive_source(warning_file, instance_name, namespace)
     if result:
         return result
+
+    # Project-wide @[to_additive] search (for cross-file definitions)
+    if is_likely_additive:
+        result = search_project_for_to_additive(instance_name)
+        if result:
+            return result
 
     # Fallback: use heuristic name mappings (may be out of sync with to_additive)
     for mul_local_name in mul_local_names:
@@ -348,10 +359,11 @@ def find_to_additive_source(file_path, additive_name, namespace=None):
         pattern = rf'\bto_additive\b.*\b{re.escape(local_name)}\b'
         for i, line in enumerate(lines):
             if re.search(pattern, line):
-                # Found a potential match - find the associated definition
+                # Found a potential match - find the associated def (not abbrev - already reducible)
                 for j in range(i, min(len(lines), i + 10)):
-                    def_match = re.match(r'^\s*(protected\s+)?(def|abbrev)\s+(\w+)', lines[j])
-                    if def_match:
+                    # Match def with any combination of protected/noncomputable
+                    if re.match(r'^\s*(protected\s+)?(noncomputable\s+)?def\s+\w+', lines[j]) or \
+                       re.match(r'^\s*noncomputable\s+protected\s+def\s+\w+', lines[j]):
                         return (file_path, j + 1, lines[j].rstrip())
     except:
         pass
@@ -396,9 +408,9 @@ def search_file_for_def(file_path, patterns, namespace=None):
 def search_project_for_def(patterns, local_name, namespace=None):
     """Search the project for a definition, preferring files matching namespace."""
     try:
-        # Use grep for efficiency
+        # Use grep to find def declarations (abbrev is already reducible, doesn't need the attribute)
         result = subprocess.run(
-            ['grep', '-rn', f'def {local_name}', 'Mathlib/'],
+            ['grep', '-rn', f'\\bdef {re.escape(local_name)}\\b', 'Mathlib/'],
             capture_output=True, text=True, timeout=60
         )
 
@@ -433,6 +445,54 @@ def search_project_for_def(patterns, local_name, namespace=None):
 
         # Fall back to first candidate
         return candidates[0] if candidates else None
+    except:
+        pass
+    return None
+
+
+def find_definition_after_line(file_path, attr_line):
+    """Find the def that follows an attribute line.
+
+    Only matches def declarations - abbrev is already reducible and doesn't need
+    @[instance_reducible], and instance declarations don't need it either.
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for i in range(attr_line - 1, min(len(lines), attr_line + 10)):
+            line = lines[i]
+            # Match def with any combination of protected/noncomputable modifiers
+            if re.match(r'^\s*(protected\s+)?(noncomputable\s+)?def\s+\w+', line) or \
+               re.match(r'^\s*noncomputable\s+protected\s+def\s+\w+', line):
+                return (file_path, i + 1, line.rstrip())
+    except:
+        pass
+    return None
+
+
+def search_project_for_to_additive(additive_name):
+    """
+    Search entire project for @[to_additive ... additive_name ...].
+    Returns (file_path, line_num, line_content) or None.
+    """
+    local_name = additive_name.rsplit('.', 1)[-1]
+    try:
+        result = subprocess.run(
+            ['grep', '-rn', '-E', f'to_additive.*\\b{re.escape(local_name)}\\b', 'Mathlib/'],
+            capture_output=True, text=True, timeout=60
+        )
+
+        for line in result.stdout.split('\n'):
+            if not line:
+                continue
+            parts = line.split(':', 2)
+            if len(parts) >= 3:
+                file_path, line_num, content = parts[0], int(parts[1]), parts[2]
+                # Find the definition that follows this attribute
+                def_info = find_definition_after_line(file_path, line_num)
+                if def_info:
+                    return def_info
     except:
         pass
     return None

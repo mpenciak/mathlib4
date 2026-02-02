@@ -1092,6 +1092,7 @@ protected def distribMulActionFilter [Monoid α] [AddMonoid β] [DistribMulActio
   smul_zero _ := (map_pure _ _).trans <| by rw [smul_zero, pure_zero]
 
 /-- A multiplicative action of a monoid on a monoid `β` gives a multiplicative action on `Set β`. -/
+@[instance_reducible]
 protected noncomputable def mulDistribMulActionFilter
     [Monoid α] [Monoid β] [MulDistribMulAction α β] : MulDistribMulAction α (Set β) where
   smul_mul _ _ _ := image_image2_distrib <| smul_mul' _

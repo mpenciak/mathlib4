@@ -235,7 +235,8 @@ theorem isRat_add {α} [Ring α] {f : α → α → α} {a b : α} {na nb nc : �
     (Nat.cast_commute (α := α) db dc).invOf_left.invOf_right.right_comm]
 
 /-- Consider an `Option` as an object in the `MetaM` monad, by throwing an error on `none`. -/
-@[expose] def _root_.Mathlib.Meta.monadLiftOptionMetaM : MonadLift Option MetaM where
+@[expose, instance_reducible]
+def _root_.Mathlib.Meta.monadLiftOptionMetaM : MonadLift Option MetaM where
   monadLift
   | none => failure
   | some e => pure e
