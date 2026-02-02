@@ -103,7 +103,7 @@ instance IsCyclic.commutative [Group α] [IsCyclic α] :
 
 /-- A cyclic group is always commutative. This is not an `instance` because often we have a better
 proof of `CommGroup`. -/
-@[to_additive
+@[to_additive (attr := instance_reducible)
       /-- A cyclic group is always commutative. This is not an `instance` because often we have
       a better proof of `AddCommGroup`. -/]
 def IsCyclic.commGroup [hg : Group α] [IsCyclic α] : CommGroup α :=

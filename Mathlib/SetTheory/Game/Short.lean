@@ -121,6 +121,7 @@ instance moveLeftShort (x : PGame) [S : Short x] (i : x.LeftMoves) : Short (x.mo
 This would be a dangerous instance potentially introducing new metavariables
 in typeclass search, so we only make it an instance locally.
 -/
+@[instance_reducible]
 def moveLeftShort' {xl xr} (xL xR) [S : Short (mk xl xr xL xR)] (i : xl) : Short (xL i) := by
   obtain ⟨L, _⟩ := S; apply L
 
@@ -133,6 +134,7 @@ instance moveRightShort (x : PGame) [S : Short x] (j : x.RightMoves) : Short (x.
 This would be a dangerous instance potentially introducing new metavariables
 in typeclass search, so we only make it an instance locally.
 -/
+@[instance_reducible]
 def moveRightShort' {xl xr} (xL xR) [S : Short (mk xl xr xL xR)] (j : xr) : Short (xR j) := by
   obtain ⟨_, R⟩ := S; apply R
 
