@@ -48,10 +48,10 @@ scoped[IntrinsicStar] attribute [instance] LinearMap.intrinsicStar
 
 open scoped IntrinsicStar
 
-@[instance_reducible, simp] theorem intrinsicStar_apply (f : E →ₗ[R] F) (x : E) : (star f) x = star (f (star x)) := rfl
+@[simp] theorem intrinsicStar_apply (f : E →ₗ[R] F) (x : E) : (star f) x = star (f (star x)) := rfl
 
 /-- The involutive intrinsic star structure on linear maps. -/
-def intrinsicInvolutiveStar : InvolutiveStar (E →ₗ[R] F) where
+@[instance_reducible] def intrinsicInvolutiveStar : InvolutiveStar (E →ₗ[R] F) where
   star_involutive x := by ext; simp
 
 scoped[IntrinsicStar] attribute [instance] LinearMap.intrinsicInvolutiveStar
