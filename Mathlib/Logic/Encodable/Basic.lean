@@ -488,13 +488,9 @@ private def good : Option α → Prop
   | none => False
 
 set_option backward.privateInPublic true in
-private def decidable_good : DecidablePred (good p) :=
+private local instance decidable_good : DecidablePred (good p) :=
   fun n => by
     cases n <;> unfold good <;> dsimp <;> infer_instance
-
-set_option backward.privateInPublic true in
-set_option backward.privateInPublic.warn false in
-attribute [local instance] decidable_good
 
 open Encodable
 

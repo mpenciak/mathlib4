@@ -27,8 +27,11 @@ instance instSuccOrder : SuccOrder ℤ :=
 
 instance instSuccAddOrder : SuccAddOrder ℤ := ⟨fun _ => rfl⟩
 
--- so that Lean reads `Int.pred` through `PredOrder.pred`
-@[instance] abbrev instPredOrder : PredOrder ℤ where
+#adaptation_note /-- Before https://github.com/leanprover/lean4/pull/12263
+this was `abbrev`, which is no longer allowed.
+The comment said "so that Lean reads `Int.pred` through `PredOrder.pred`"
+-/
+instance instPredOrder : PredOrder ℤ where
   pred := pred
   pred_le _ := (sub_one_lt_of_le le_rfl).le
   min_of_le_pred ha := ((sub_one_lt_of_le le_rfl).not_ge ha).elim

@@ -83,9 +83,11 @@ attribute [instance] HasForget.forget_faithful
 abbrev forget (C : Type u) [Category.{v} C] [HasForget.{w} C] : C ⥤ Type w :=
   HasForget.forget
 
--- this is reducible because we want `forget (Type u)` to unfold to `𝟭 _`
-@[instance] abbrev HasForget.types : HasForget.{u, u, u + 1} (Type u) where
+-- this is an `abbrev` because we want `forget (Type u)` to unfold to `𝟭 _`
+abbrev HasForget.types : HasForget.{u, u, u + 1} (Type u) where
   forget := 𝟭 _
+
+attribute [instance] HasForget.types
 
 /-- Provide a coercion to `Type u` for a concrete category. This is not marked as an instance
 as it could potentially apply to every type, and so is too expensive in typeclass search.

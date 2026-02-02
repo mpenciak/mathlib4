@@ -206,6 +206,7 @@ local postfix:90 "†" => starRingEnd _
 /-- Inner product defined by the `PreInnerProductSpace.Core` structure. We can't reuse
 `PreInnerProductSpace.Core.toInner` because it takes `PreInnerProductSpace.Core` as an explicit
 argument. -/
+@[instance_reducible]
 def toPreInner' : Inner 𝕜 F :=
   c.toInner
 
@@ -439,6 +440,7 @@ local notation "ext_iff" => @RCLike.ext_iff 𝕜 _
 /-- Inner product defined by the `InnerProductSpace.Core` structure. We can't reuse
 `InnerProductSpace.Core.toInner` because it takes `InnerProductSpace.Core` as an explicit
 argument. -/
+@[instance_reducible]
 def toInner' : Inner 𝕜 F :=
   cd.toInner
 

@@ -208,7 +208,7 @@ instance shortNeg : ∀ (x : PGame.{u}) [Short x], Short (-x)
   | mk xl xr xL xR, _ => by
     exact Short.mk (fun i => shortNeg _) fun i => shortNeg _
 
-instance shortAdd : ∀ (x y : PGame.{u}) [Short x] [Short y], Short (x + y)
+def shortAdd : ∀ (x y : PGame.{u}) [Short x] [Short y], Short (x + y)
   | mk xl xr xL xR, mk yl yr yL yR, _, _ => by
     apply Short.mk
     all_goals
@@ -216,6 +216,12 @@ instance shortAdd : ∀ (x y : PGame.{u}) [Short x] [Short y], Short (x + y)
       · apply shortAdd
       · change Short (mk xl xr xL xR + _); apply shortAdd
 termination_by x y => (x, y)
+
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12263
+we use a wrapper instance here rather than declaring `shortAdd` as an instance directly,
+to avoid a ``instance `SetTheory.PGame.shortAdd._unary` must be marked with `@[reducible]` or
+`@[instance_reducible]`` warning. -/
+instance : ∀ (x y : PGame.{u}) [Short x] [Short y], Short (x + y) := shortAdd
 
 instance shortNat : ∀ n : ℕ, Short n
   | 0 => PGame.short0

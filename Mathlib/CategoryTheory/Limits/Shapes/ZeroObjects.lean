@@ -181,6 +181,7 @@ variable [HasZeroObject C]
 /-- Construct a `Zero C` for a category with a zero object.
 This cannot be a global instance as it will trigger for every `Zero C` typeclass search.
 -/
+@[instance_reducible]
 protected def HasZeroObject.zero' : Zero C where zero := HasZeroObject.zero.choose
 
 scoped[ZeroObject] attribute [instance] CategoryTheory.Limits.HasZeroObject.zero'

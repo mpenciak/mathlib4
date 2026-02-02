@@ -779,6 +779,7 @@ def convolution₂ (d d' d'' : D) :
 /-- In a `LawfulDayConvolutionMonoidalCategoryStruct`, `ι.obj ((d ⊗ d') ⊗ d'')`
 is a (triple) Day convolution of `(ι C V).obj d`, `(ι C V).obj d'` and
 `(ι C V).obj d''`. -/
+@[instance_reducible]
 def convolution₂' (d d' d'' : D) :
     DayConvolution ((ι C V D |>.obj d) ⊛ (ι C V D |>.obj d')) (ι C V D |>.obj d'') :=
   convolution C V D _ _
@@ -1051,7 +1052,7 @@ class InducedLawfulDayConvolutionMonoidalCategoryStructCore
 
 namespace InducedLawfulDayConvolutionMonoidalCategoryStructCore
 
-attribute [local instance] tensorUnitConvolutionUnit
+attribute [instance_reducible, local instance] tensorUnitConvolutionUnit
 
 section
 
