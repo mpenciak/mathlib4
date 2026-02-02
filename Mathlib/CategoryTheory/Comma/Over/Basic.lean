@@ -80,6 +80,7 @@ def mk {X Y : T} (f : Y ⟶ X) : Over X :=
 
 /-- We can set up a coercion from arrows with codomain `X` to `over X`. This most likely should not
 be a global instance, but it is sometimes useful. -/
+@[instance_reducible]
 def coeFromHom {X Y : T} : CoeOut (Y ⟶ X) (Over X) where coe := mk
 
 section

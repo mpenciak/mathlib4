@@ -228,10 +228,12 @@ namespace HasZeroObject
 variable [HasZeroObject C]
 
 /-- There is a unique morphism from the zero object to any object `X`. -/
+@[instance_reducible]
 protected def uniqueTo (X : C) : Unique (0 ⟶ X) :=
   ((isZero_zero C).unique_to X).some
 
 /-- There is a unique morphism from any object `X` to the zero object. -/
+@[instance_reducible]
 protected def uniqueFrom (X : C) : Unique (X ⟶ 0) :=
   ((isZero_zero C).unique_from X).some
 
