@@ -203,6 +203,7 @@ theorem encodek₂ [Encodable α] (a : α) : decode₂ α (encode a) = some a :=
   mem_decode₂.2 rfl
 
 /-- The encoding function has decidable range. -/
+@[instance_reducible]
 def decidableRangeEncode (α : Type*) [Encodable α] : DecidablePred (· ∈ Set.range (@encode α _)) :=
   fun x =>
   decidable_of_iff (Option.isSome (decode₂ α x))

@@ -46,6 +46,7 @@ variable [Zero β] [SMulZeroClass α β] {s : Set α} {t : Set β} {a : α}
 
 /-- If scalar multiplication by elements of `α` sends `(0 : β)` to zero,
 then the same is true for `(0 : Set β)`. -/
+@[instance_reducible]
 protected def smulZeroClassSet [Zero β] [SMulZeroClass α β] : SMulZeroClass α (Set β) where
   smul_zero _ := image_singleton.trans <| by rw [smul_zero, singleton_zero]
 

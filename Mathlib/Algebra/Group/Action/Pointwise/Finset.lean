@@ -79,7 +79,7 @@ instance isCentralScalar [SMul α β] [SMul αᵐᵒᵖ β] [IsCentralScalar α 
 
 /-- A multiplicative action of a monoid `α` on a type `β` gives a multiplicative action of
 `Finset α` on `Finset β`. -/
-@[to_additive
+@[to_additive (attr := instance_reducible)
       /-- An additive action of an additive monoid `α` on a type `β` gives an additive action
       of `Finset α` on `Finset β` -/]
 protected def mulAction [DecidableEq α] [Monoid α] [MulAction α β] :

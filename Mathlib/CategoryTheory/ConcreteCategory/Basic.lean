@@ -95,6 +95,7 @@ You can use it on particular examples as:
 instance : HasCoeToSort X := HasForget.hasCoeToSort X
 ```
 -/
+@[instance_reducible]
 def HasForget.hasCoeToSort (C : Type u) [Category.{v} C] [HasForget.{w} C] :
     CoeSort C (Type w) where
   coe X := (forget C).obj X
