@@ -16,7 +16,7 @@ require "leanprover-community" / "proofwidgets" @ git "v0.0.86" -- ProofWidgets 
     If this does not work, report your issue on the Lean Zulip."
 require "leanprover-community" / "importGraph" @ git "nightly-testing"
 require "leanprover-community" / "LeanSearchClient" @ git "nightly-testing"
-require "leanprover-community" / "plausible" @ git "nightly-testing"
+require "leanprover-community" / "plausible" @ git "lean-pr-testing-12263"
 
 
 /-!
