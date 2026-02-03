@@ -620,7 +620,7 @@ instance : Finite (PrimeSpectrum R) :=
   .of_equiv _ (PrimeSpectrum.equivSubtype _).symm.toEquiv
 
 /-- A temporary field instance on the quotients by maximal ideals. -/
-@[local instance] noncomputable def fieldOfSubtypeIsMaximal
+@[instance_reducible, local instance] noncomputable def fieldOfSubtypeIsMaximal
     (I : MaximalSpectrum R) : Field (R ⧸ I.asIdeal) :=
   Ideal.Quotient.field I.asIdeal
 
