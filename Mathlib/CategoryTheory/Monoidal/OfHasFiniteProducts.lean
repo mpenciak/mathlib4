@@ -167,6 +167,10 @@ def monoidalOfHasFiniteCoproducts [HasInitial C] [HasBinaryCoproducts C] : Monoi
     (pentagon := coprod.pentagon)
     (triangle := coprod.triangle)
     (associator_naturality := @coprod.associator_naturality _ _ _)
+    (id_tensorHom_id := sorry)
+    (tensorHom_comp_tensorHom := sorry)
+    (leftUnitor_naturality := sorry)
+    (rightUnitor_naturality := sorry)
 
 end
 

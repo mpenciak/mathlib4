@@ -40,7 +40,7 @@ def cartesianComon : C ⥤ Comon C where
       counit := toUnit _
     }
   }
-  map f := .mk' f
+  map f := .mk' f (f_comul := sorry)
 
 @[deprecated (since := "2025-09-15")] alias cartesianComon_ := cartesianComon
 
