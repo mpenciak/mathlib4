@@ -25,7 +25,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "9b261819fd5d669220cb6694d62ead0dfca1fb9d",
+   "rev": "4cf313410e037baf5eacedeb8600eb9734e12b0d",
    "name": "importGraph",
    "manifestFile": "lake-manifest.json",
    "inputRev": "nightly-testing",
