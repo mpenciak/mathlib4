@@ -50,7 +50,7 @@ theorem small_of_injective_of_exists {α : Type v} {β : Type w} {γ : Type v'} 
     obtain ⟨a, ha⟩ := h b
     exact ⟨a, by rw [Function.comp_apply, ha, Function.leftInverse_invFun hg]⟩
   · simp only [not_nonempty_iff] at hβ
-    infer_instance
+    exact small_subsingleton β
 
 /-!
 We don't define `Countable.toSmall` in this file, to keep imports to `Logic` to a minimum.
