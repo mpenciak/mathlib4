@@ -209,17 +209,25 @@ end
 
 section ChangeOfUniverse
 
+-- FIXME: Leo proposes a different fix here, see https://lean-fro.zulipchat.com/#narrow/channel/560890-refactoring-nightmares/topic/Fixing.20type.20class.20resolution.20cache/near/573191307
+
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286/
+typeclass search won't return `I`, because it is indistinguishable from `I''` except for universes,
+so we need to use `@`. -/
 /-- Up to an equivalence, the type `SmallHom.{w} W X Y n` does not depend on the universe `w`. -/
 noncomputable def chgUniv {X Y : C}
-    [HasSmallLocalizedHom.{w} W X Y] [HasSmallLocalizedHom.{w''} W X Y] :
-    SmallHom.{w} W X Y ≃ SmallHom.{w''} W X Y :=
-  (equiv.{w} W W.Q).trans (equiv.{w''} W W.Q).symm
+    [I : HasSmallLocalizedHom.{w} W X Y] [I'' : HasSmallLocalizedHom.{w''} W X Y] :
+    @SmallHom.{w} _ _ W X Y I ≃ @SmallHom.{w''} _ _ W X Y I'' :=
+  (@equiv.{w} _ _ W _ _ W.Q _ _ _ I).trans (@equiv.{w''} _ _ W _ _  W.Q _ _ _ I'').symm
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286/
+typeclass search won't return `I`, because it is indistinguishable from `I''` except for universes,
+so we need to use `@`. -/
 lemma equiv_chgUniv (L : C ⥤ D) [L.IsLocalization W] {X Y : C}
-    [HasSmallLocalizedHom.{w} W X Y] [HasSmallLocalizedHom.{w''} W X Y]
-    (e : SmallHom.{w} W X Y) :
-    equiv W L (chgUniv.{w''} e) = equiv W L e := by
-  obtain ⟨f, rfl⟩ := (equiv W W.Q).symm.surjective e
+    [I : HasSmallLocalizedHom.{w} W X Y] [I'' : HasSmallLocalizedHom.{w''} W X Y]
+    (e : @SmallHom.{w} _ _ W X Y I) :
+    equiv W L (@chgUniv.{w''} _ _ _ _ _ I I'' e) = @equiv _ _ W _ _ L _ _ _ I e := by
+  obtain ⟨f, rfl⟩ := (@equiv _ _ W _ _ W.Q _ _ _ I).symm.surjective e
   dsimp [chgUniv]
   simp only [Equiv.apply_symm_apply,
     equiv_equiv_symm W _ _ _ (Localization.compUniqFunctor W.Q L W)]
