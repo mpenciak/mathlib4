@@ -41,9 +41,8 @@ namespace LinearMap
 
 /-- The intrinsic star operation on linear maps `E →ₗ F` defined by
 `(star f) x = star (f (star x))`. -/
-@[instance_reducible]
-def intrinsicStar : Star (E →ₗ[R] F) where
-  star f :=
+instance intrinsicStar : Star (WithConv (E →ₗ[R] F)) where
+  star f := toConv <|
   { toFun x := star (f (star x))
     map_add' := by simp
     map_smul' := by simp }
@@ -52,12 +51,11 @@ def intrinsicStar : Star (E →ₗ[R] F) where
     (star f) x = star (f (star x)) := rfl
 
 /-- The involutive intrinsic star structure on linear maps. -/
-@[instance_reducible] def intrinsicInvolutiveStar : InvolutiveStar (E →ₗ[R] F) where
+instance intrinsicInvolutiveStar : InvolutiveStar (WithConv (E →ₗ[R] F)) where
   star_involutive x := by ext; simp
 
 /-- The intrinsic star additive monoid structure on linear maps. -/
-@[instance_reducible]
-def intrinsicStarAddMonoid : StarAddMonoid (E →ₗ[R] F) where
+instance intrinsicStarAddMonoid : StarAddMonoid (WithConv (E →ₗ[R] F)) where
   star_add x y := by ext; simp
 
 /-- A linear map is self-adjoint (with respect to the intrinsic star) iff it is star-preserving. -/
@@ -194,10 +192,10 @@ end matrix
 namespace Module.End
 
 /-- Intrinsic star operation for `(End R E)ˣ`. -/
-@[instance_reducible]
-def Units.intrinsicStar : Star (End R E)ˣ where
-  star f := by
-    refine ⟨star f, star (f⁻¹ : (End R E)ˣ), ?_, ?_⟩
+instance Units.intrinsicStar : Star (WithConv (End R E)ˣ) where
+  star f := toConv <| by
+    refine ⟨(star (toConv ↑f.ofConv : WithConv (End R E))).ofConv,
+      (star (toConv ↑(f.ofConv⁻¹ : (End R E)ˣ))).ofConv, ?_, ?_⟩
     all_goals
       ext
       simp only [mul_apply, LinearMap.intrinsicStar_apply, star_star]
