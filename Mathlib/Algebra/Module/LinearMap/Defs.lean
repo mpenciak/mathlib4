@@ -124,6 +124,13 @@ abbrev LinearMapClass (F : Type*) (R : outParam Type*) (M M₂ : Type*)
     [FunLike F M M₂] :=
   SemilinearMapClass F (RingHom.id R) M M₂
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286/
+we need this instance -/
+instance (F : Type*) (R : outParam Type*) (M M₂ : Type*)
+    [Semiring R] [AddCommMonoid M] [AddCommMonoid M₂] [Module R M] [Module R M₂]
+    [FunLike F M M₂] [I : LinearMapClass F R M M₂] : MulActionHomClass F R M M₂ :=
+  I.toMulActionSemiHomClass
+
 protected lemma LinearMapClass.map_smul {R M M₂ : outParam Type*} [Semiring R] [AddCommMonoid M]
     [AddCommMonoid M₂] [Module R M] [Module R M₂]
     {F : Type*} [FunLike F M M₂] [LinearMapClass F R M M₂] (f : F) (r : R) (x : M) :
@@ -626,9 +633,11 @@ variable [Semiring R] [Module R M] [Semiring S] [Module S M₂] [Module R M₃]
 variable {σ : R →+* S}
 
 instance : SemilinearMapClass (M →ₑ+[σ.toMonoidHom] M₂) σ M M₂ where
+  map_smulₛₗ := sorry
 
 /-- A `DistribMulActionHom` between two modules is a linear map. -/
 instance : LinearMapClass (M →+[R] M₃) R M M₃ where
+  map_smulₛₗ := sorry
 
 @[simp]
 theorem coe_toLinearMap (f : M →ₑ+[σ.toMonoidHom] M₂) : ((f : M →ₛₗ[σ] M₂) : M → M₂) = f :=
