@@ -70,6 +70,7 @@ instance small_biUnion (s : Set ι) [Small.{u} s]
 
 instance small_insert (x : α) (s : Set α) [Small.{u} s] :
     Small.{u} (insert x s : Set α) :=
+  have : Small.{u} ({x} : Set α) := small_subsingleton _
   Set.insert_eq x s ▸ small_union.{u} {x} s
 
 instance small_diff (s t : Set α) [Small.{u} s] : Small.{u} (s \ t : Set α) :=
@@ -115,10 +116,12 @@ instance small_biInter' (s : Set ι) [Nonempty s]
   small_biInter t.prop f
 
 theorem small_empty : Small.{u} (∅ : Set α) :=
-  inferInstance
+  small_subsingleton (∅ : Set α)
 
 theorem small_single (x : α) : Small.{u} ({x} : Set α) :=
-  inferInstance
+  small_subsingleton ({x} : Set α)
 
 theorem small_pair (x y : α) : Small.{u} ({x, y} : Set α) :=
-  inferInstance
+  have : Small.{u} ({x} : Set α) := small_single x
+  have : Small.{u} ({y} : Set α) := small_single y
+  small_union.{u} {x} {y}
