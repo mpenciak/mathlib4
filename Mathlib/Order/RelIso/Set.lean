@@ -9,7 +9,6 @@ public import Mathlib.Order.Directed
 public import Mathlib.Order.RelIso.Basic
 public import Mathlib.Logic.Embedding.Set
 public import Mathlib.Logic.Equiv.Set
-public import Mathlib.Data.FunLike.OrderDual
 
 /-!
 # Interactions between relation homomorphisms and sets
