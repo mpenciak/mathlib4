@@ -22,7 +22,26 @@ universe u v
 
 variable (α : Type v) [Small.{u} α]
 
-noncomputable instance [Preorder α] : Preorder (Shrink.{u} α) :=
+section Bot
+variable [Bot α]
+
+@[to_dual]
+noncomputable instance : Bot (Shrink.{u} α) where
+  bot := equivShrink _ ⊥
+
+@[to_dual (attr := simp)]
+lemma equivShrink_bot : equivShrink.{u} α ⊥ = ⊥ := rfl
+
+@[to_dual (attr := simp)]
+lemma equivShrink_symm_bot : (equivShrink.{u} α).symm ⊥ = ⊥ :=
+  (equivShrink.{u} α).injective (by simp)
+
+end Bot
+
+section Preorder
+variable [Preorder α]
+
+noncomputable instance : Preorder (Shrink.{u} α) :=
   Preorder.lift (equivShrink α).symm
 
 /-- The order isomorphism `α ≃o Shrink.{u} α`. -/
@@ -44,8 +63,9 @@ lemma orderIsoShrink_apply [Preorder α] (a : α) :
 lemma orderIsoShrink_symm_apply [Preorder α] (a : Shrink.{u} α) :
     (orderIsoShrink α).symm a = (equivShrink α).symm a := rfl
 
-noncomputable instance [PartialOrder α] : PartialOrder (Shrink.{u} α) where
-  le_antisymm _ _ h₁ h₂ := (equivShrink _).symm.injective (le_antisymm h₁ h₂)
+@[simp]
+theorem equivShrink_le_equivShrink {x y : α} : equivShrink α x ≤ equivShrink α y ↔ x ≤ y :=
+  (orderIsoShrink α).map_rel_iff
 
 noncomputable instance [LinearOrder α] : LinearOrder (Shrink.{u} α) where
   le_total _ _ := le_total _ _
