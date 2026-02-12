@@ -753,7 +753,7 @@ instance (x : PrimeSpectrum.Top R) :
     (LocalizedModule.mkLinearMap x.asIdeal.primeCompl M) (stalkIsoₗ R M x).toLinearEquiv.symm
   ext m
   refine .trans ?_ (localizationtoStalkₗ_mk ..).symm
-  dsimp [toStalkₗ', toOpenₗ]
+  dsimp +instances [toStalkₗ', toOpenₗ]
   rw! [PrimeSpectrum.basicOpen_one]
   rfl
 
