@@ -6,8 +6,8 @@ Authors: Markus Himmel
 module
 
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Mon_
-public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.CommSq
 public import Mathlib.CategoryTheory.Limits.ExactFunctor
+public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Defs
 
 /-!
 # The category of groups in a Cartesian monoidal category
@@ -41,7 +41,7 @@ class GrpObj (X : C) extends MonObj X where
 namespace MonObj
 
 @[inherit_doc] scoped notation "ι" => GrpObj.inv
-@[inherit_doc] scoped notation "ι["G"]" => GrpObj.inv (X := G)
+@[inherit_doc] scoped notation "ι[" G "]" => GrpObj.inv (X := G)
 
 end MonObj
 
@@ -82,8 +82,6 @@ def trivial : Grp C :=
 
 instance : Inhabited (Grp C) where
   default := trivial C
-
-@[deprecated (since := "2025-06-15")] alias mk' := mk
 
 instance : Category (Grp C) :=
   inferInstanceAs (Category (InducedCategory _ Grp.toMon))
@@ -194,8 +192,8 @@ theorem inv_comp_inv (A : C) [GrpObj A] : ι ≫ ι = 𝟙 A := by
 abbrev ofIso (e : G ≅ X) : GrpObj X where
   toMonObj := .ofIso e
   inv := e.inv ≫ ι[G] ≫ e.hom
-  left_inv := by simp [MonObj.ofIso]
-  right_inv := by simp [MonObj.ofIso]
+  left_inv := by simp +instances [MonObj.ofIso]
+  right_inv := by simp +instances [MonObj.ofIso]
 
 instance (A : C) [GrpObj A] : IsIso ι[A] := ⟨ι, by simp, by simp⟩
 
@@ -576,9 +574,9 @@ abbrev FullyFaithful.grpObj (hF : F.FullyFaithful) (X : C) [GrpObj (F.obj X)] :
   __ := hF.monObj X
   inv := hF.preimage ι[F.obj X]
   left_inv := hF.map_injective <| by
-    simp [FullyFaithful.monObj, OplaxMonoidal.η_of_cartesianMonoidalCategory]
+    simp [OplaxMonoidal.η_of_cartesianMonoidalCategory]
   right_inv := hF.map_injective <| by
-    simp [FullyFaithful.monObj, OplaxMonoidal.η_of_cartesianMonoidalCategory]
+    simp [OplaxMonoidal.η_of_cartesianMonoidalCategory]
 
 @[deprecated (since := "2025-09-13")] alias FullyFaithful.grp_Class := FullyFaithful.grpObj
 

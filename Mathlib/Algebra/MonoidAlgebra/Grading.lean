@@ -112,7 +112,7 @@ variable [AddMonoid M] [DecidableEq ι] [AddMonoid ι] [CommSemiring R] (f : M �
 /-- Auxiliary definition; the canonical grade decomposition, used to provide
 `DirectSum.decompose`. -/
 def decomposeAux : R[M] →ₐ[R] ⨁ i : ι, gradeBy R f i :=
-  AddMonoidAlgebra.lift R M _
+  AddMonoidAlgebra.lift R _ M
     { toFun := fun m =>
         DirectSum.of (fun i : ι => gradeBy R f i) (f m.toAdd)
           ⟨Finsupp.single m.toAdd 1, single_mem_gradeBy _ _ _⟩
@@ -121,7 +121,7 @@ def decomposeAux : R[M] →ₐ[R] ⨁ i : ι, gradeBy R f i :=
           (by congr 2 <;> simp)
       map_mul' := fun i j => by
         symm
-        dsimp only [toAdd_one, Eq.ndrec, Set.mem_setOf_eq, ne_eq, OneHom.toFun_eq_coe,
+        dsimp +instances only [toAdd_one, Eq.ndrec, Set.mem_setOf_eq, ne_eq, OneHom.toFun_eq_coe,
           OneHom.coe_mk, toAdd_mul]
         convert DirectSum.of_mul_of (A := (fun i : ι => gradeBy R f i)) _ _
         repeat { rw [map_add] }

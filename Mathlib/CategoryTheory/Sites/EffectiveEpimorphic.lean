@@ -117,7 +117,7 @@ def effectiveEpiStructOfIsColimit {X Y : C} (f : Y ⟶ X)
   { desc := fun {_} e h => Hf.desc (aux e h)
     fac := by
       intro W e h
-      dsimp
+      dsimp +instances
       have := Hf.fac (aux e h) ⟨Over.mk f, 𝟙 _, by simp⟩
       dsimp [aux] at this; rw [this]; clear this
       nth_rewrite 2 [← Category.id_comp e]
@@ -126,7 +126,7 @@ def effectiveEpiStructOfIsColimit {X Y : C} (f : Y ⟶ X)
       rw [hh.choose_spec, Category.id_comp]
     uniq := by
       intro W e h m hm
-      dsimp
+      dsimp +instances
       apply Hf.uniq (aux e h)
       rintro ⟨A, g, hA⟩
       dsimp
@@ -223,7 +223,7 @@ def effectiveEpiFamilyStructOfIsColimit {B : C} {α : Type*}
       ι := {
         app := fun ⟨_,hT⟩ => hT.choose_spec.choose ≫ e hT.choose
         naturality := by
-          rintro ⟨A,a,(g₁ : A.left ⟶ _),ha⟩ ⟨B,b,(g₂ : B.left ⟶ _),hb⟩ ⟨q : A ⟶ B⟩
+          rintro ⟨A, a, (g₁ : A.left ⟶ _), ha⟩ ⟨B, b, (g₂ : B.left ⟶ _), hb⟩ ⟨q : A ⟶ B⟩
           dsimp; rw [Category.comp_id, ← Category.assoc]
           apply h; rw [Category.assoc]
           generalize_proofs h1 h2 h3 h4
@@ -231,7 +231,7 @@ def effectiveEpiFamilyStructOfIsColimit {B : C} {α : Type*}
   { desc := fun {_} e h => H.desc (aux e h)
     fac := by
       intro W e h a
-      dsimp
+      dsimp +instances
       have := H.fac (aux e h) ⟨Over.mk (π a), a, 𝟙 _, by simp⟩
       dsimp [aux] at this; rw [this]; clear this
       conv_rhs => rw [← Category.id_comp (e a)]

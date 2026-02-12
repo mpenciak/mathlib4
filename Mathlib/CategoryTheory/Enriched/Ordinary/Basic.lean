@@ -193,7 +193,7 @@ def ForgetEnrichment.equivFunctor (D : Type u'') [Category.{v''} D] [EnrichedOrd
   obj X := ForgetEnrichment.to V X
   map f := (eHomEquiv V).symm (ForgetEnrichment.homTo V f)
   map_id X := by rw [ForgetEnrichment.homTo_id, ← eHomEquiv_id, Equiv.symm_apply_apply]
-  map_comp {X} {Y} {Z} f g :=  Equiv.injective
+  map_comp {X} {Y} {Z} f g := Equiv.injective
     (eHomEquiv V (X := ForgetEnrichment.to V X) (Y := ForgetEnrichment.to V Z))
     (by simp [eHomEquiv_comp])
 
@@ -237,7 +237,7 @@ def TransportEnrichment.enrichedOrdinaryCategory
   homEquiv {X Y} := (eHomEquiv V (C := C)).trans (e (Hom (C := C) X Y))
   homEquiv_id {X} := by simpa using h _ (eId V _)
   homEquiv_comp f g := by
-    dsimp [instEnrichedCategoryTransportEnrichment]
+    dsimp +instances [instEnrichedCategoryTransportEnrichment]
     rw [h, h, h, ← tensorHom_comp_tensorHom_assoc, eComp_eq, tensorHom_def_assoc,
       whiskerRight_id_assoc, unitors_inv_equal, Iso.inv_hom_id_assoc,
       Functor.LaxMonoidal.μ_natural_assoc, Functor.LaxMonoidal.right_unitality_inv_assoc,

@@ -37,6 +37,7 @@ namespace LinearMap
 
 /-- The intrinsic star operation on linear maps `E →ₗ F` defined by
 `(star f) x = star (f (star x))`. -/
+@[instance_reducible]
 def intrinsicStar : Star (E →ₗ[R] F) where
   star f :=
   { toFun x := star (f (star x))
@@ -50,12 +51,13 @@ open scoped IntrinsicStar
 @[simp] theorem intrinsicStar_apply (f : E →ₗ[R] F) (x : E) : (star f) x = star (f (star x)) := rfl
 
 /-- The involutive intrinsic star structure on linear maps. -/
-def intrinsicInvolutiveStar : InvolutiveStar (E →ₗ[R] F) where
+@[instance_reducible] def intrinsicInvolutiveStar : InvolutiveStar (E →ₗ[R] F) where
   star_involutive x := by ext; simp
 
 scoped[IntrinsicStar] attribute [instance] LinearMap.intrinsicInvolutiveStar
 
 /-- The intrinsic star additive monoid structure on linear maps. -/
+@[instance_reducible]
 def intrinsicStarAddMonoid : StarAddMonoid (E →ₗ[R] F) where
   star_add x y := by ext; simp
 
@@ -109,7 +111,7 @@ lemma intrinsicStarModule : StarModule R (E →ₗ[R] F) where
 
 scoped[IntrinsicStar] attribute [instance] LinearMap.intrinsicStarModule
 
-section TensorProduct
+section CommSemiring
 variable {R E F G H : Type*} [CommSemiring R] [StarRing R]
   [AddCommMonoid E] [StarAddMonoid E] [Module R E] [StarModule R E]
   [AddCommMonoid F] [StarAddMonoid F] [Module R F] [StarModule R F]
@@ -126,7 +128,24 @@ theorem intrinsicStar_lTensor (f : F →ₗ[R] G) : star (lTensor E f) = lTensor
 theorem intrinsicStar_rTensor (f : E →ₗ[R] F) : star (rTensor G f) = rTensor G (star f) := by
   simp [rTensor, TensorProduct.intrinsicStar_map]
 
-end TensorProduct
+theorem intrinsicStar_eq_comp (f : E →ₗ[R] F) :
+    star f = (starLinearEquiv R).toLinearMap ∘ₛₗ f ∘ₛₗ (starLinearEquiv R).toLinearMap := rfl
+
+theorem IntrinsicStar.starLinearEquiv_eq_arrowCongr :
+    starLinearEquiv R (A := E →ₗ[R] F) = (starLinearEquiv R).arrowCongr (starLinearEquiv R) := rfl
+
+end CommSemiring
+
+section starAddMonoidSemiring
+variable {S : Type*} [Semiring S] [StarAddMonoid S] [StarModule S S] [Module S E] [StarModule S E]
+
+@[simp] theorem intrinsicStar_toSpanSingleton (a : E) :
+    star (toSpanSingleton S E a) = toSpanSingleton S E (star a) := by ext; simp
+
+theorem intrinsicStar_smulRight [Module S F] [StarModule S F] (f : E →ₗ[S] S) (x : F) :
+    star (f.smulRight x) = (star f).smulRight (star x) := by ext; simp
+
+end starAddMonoidSemiring
 
 end LinearMap
 
@@ -139,7 +158,7 @@ namespace LinearMap
 
 theorem toMatrix'_intrinsicStar (f : (m → R) →ₗ[R] (n → R)) :
     (star f).toMatrix' = f.toMatrix'.map star := by
-  ext; simp [Pi.star_def, apply_ite]
+  ext; simp
 
 /-- A linear map `f : (m → R) →ₗ (n → R)` is self-adjoint (with respect to the intrinsic star)
 iff its corresponding matrix `f.toMatrix'` has all self-adjoint elements.
@@ -169,6 +188,7 @@ namespace Module.End
 open scoped IntrinsicStar
 
 /-- Intrinsic star operation for `(End R E)ˣ`. -/
+@[instance_reducible]
 def Units.intrinsicStar : Star (End R E)ˣ where
   star f := by
     refine ⟨star f, star (f⁻¹ : (End R E)ˣ), ?_, ?_⟩

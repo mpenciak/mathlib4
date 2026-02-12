@@ -10,7 +10,7 @@ public import Mathlib.CategoryTheory.Equivalence
 /-!
 # 2-commutative squares of functors
 
-Similarly as `CommSq.lean` defines the notion of commutative squares,
+Similarly to `Mathlib/CategoryTheory/CommSq.lean`, which defines the notion of commutative squares,
 this file introduces the notion of 2-commutative squares of functors.
 
 If `T : C₁ ⥤ C₂`, `L : C₁ ⥤ C₃`, `R : C₂ ⥤ C₄`, `B : C₃ ⥤ C₄` are functors,
@@ -44,7 +44,7 @@ variable (T : C₁ ⥤ C₂) (L : C₁ ⥤ C₃) (R : C₂ ⥤ C₄) (B : C₃ �
 namespace CatCommSq
 
 /-- The vertical identity `CatCommSq` -/
-@[simps!]
+@[instance_reducible, simps!]
 def vId : CatCommSq T (𝟭 C₁) (𝟭 C₂) T where
   iso := (Functor.leftUnitor _) ≪≫ (Functor.rightUnitor _).symm
 
@@ -107,7 +107,7 @@ def hInv (_ : CatCommSq T.functor L R B.functor) : CatCommSq T.inverse R L B.inv
   iso := isoWhiskerLeft _ (L.rightUnitor.symm ≪≫ isoWhiskerLeft L B.unitIso ≪≫
       (associator _ _ _).symm ≪≫
       isoWhiskerRight (iso T.functor L R B.functor).symm B.inverse ≪≫
-      associator _ _ _  ) ≪≫ (associator _ _ _).symm ≪≫
+      associator _ _ _) ≪≫ (associator _ _ _).symm ≪≫
       isoWhiskerRight T.counitIso _ ≪≫ leftUnitor _
 
 lemma hInv_hInv (h : CatCommSq T.functor L R B.functor) :
@@ -147,7 +147,7 @@ def vInv (_ : CatCommSq T L.functor R.functor B) : CatCommSq B L.inverse R.inver
       associator _ _ _ ≪≫
       isoWhiskerLeft L.inverse (iso T L.functor R.functor B).symm) R.inverse ≪≫
       associator _ _ _ ≪≫ isoWhiskerLeft _ (associator _ _ _) ≪≫
-      (associator _ _ _ ).symm ≪≫ isoWhiskerLeft _ R.unitIso.symm ≪≫
+      (associator _ _ _).symm ≪≫ isoWhiskerLeft _ R.unitIso.symm ≪≫
       rightUnitor _
 
 lemma vInv_vInv (h : CatCommSq T L.functor R.functor B) :

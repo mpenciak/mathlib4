@@ -5,9 +5,7 @@ Authors: Joël Riou
 -/
 module
 
-public import Mathlib.CategoryTheory.Sites.CoverLifting
-public import Mathlib.CategoryTheory.Sites.CoverPreserving
-public import Mathlib.CategoryTheory.Sites.Coverage
+public import Mathlib.CategoryTheory.Sites.Equivalence
 public import Mathlib.CategoryTheory.Limits.Constructions.Over.Connected
 public import Mathlib.CategoryTheory.Limits.Shapes.Connected
 
@@ -343,7 +341,7 @@ lemma over_toGrothendieck_eq_toGrothendieck_comap_forget (X : C) :
   refine le_antisymm ?_ ?_
   · intro ⟨Y, right, (s : Y ⟶ X)⟩ R hR
     obtain ⟨(R : Sieve Y), rfl⟩ := (Sieve.overEquiv _).symm.surjective R
-    simp only [GrothendieckTopology.mem_over_iff, Equiv.apply_symm_apply,
+    simp +instances only [GrothendieckTopology.mem_over_iff, Equiv.apply_symm_apply,
       ← Precoverage.toGrothendieck_toCoverage] at hR
     induction hR with
     | of Z S hS =>
@@ -365,5 +363,27 @@ lemma over_toGrothendieck_eq_toGrothendieck_comap_forget (X : C) :
     exact Precoverage.Saturate.of _ _ hR
 
 end
+
+instance {X : C} (f : Over X) :
+    f.iteratedSliceEquiv.inverse.IsDenseSubsite (J.over _) ((J.over _).over _) where
+  functorPushforward_mem_iff := by
+    simp [GrothendieckTopology.mem_over_iff, Sieve.overEquiv,
+      ← Over.iteratedSliceBackward_forget_forget f, Sieve.functorPushforward_comp]
+
+instance {X : C} (f : Over X) :
+    f.iteratedSliceForward.IsContinuous ((J.over _).over _) (J.over _) :=
+  inferInstanceAs (f.iteratedSliceEquiv.functor.IsContinuous _ _)
+
+instance {X : C} (f : Over X) :
+    f.iteratedSliceForward.IsCocontinuous ((J.over _).over _) (J.over _) :=
+  inferInstanceAs (f.iteratedSliceEquiv.functor.IsCocontinuous _ _)
+
+instance {X : C} (f : Over X) :
+    f.iteratedSliceBackward.IsContinuous (J.over _) ((J.over _).over _) :=
+  inferInstanceAs (f.iteratedSliceEquiv.inverse.IsContinuous _ _)
+
+instance {X : C} (f : Over X) :
+    f.iteratedSliceBackward.IsCocontinuous (J.over _) ((J.over _).over _) :=
+  inferInstanceAs (f.iteratedSliceEquiv.inverse.IsCocontinuous _ _)
 
 end CategoryTheory

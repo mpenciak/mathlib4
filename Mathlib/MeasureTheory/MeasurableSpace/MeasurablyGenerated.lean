@@ -48,7 +48,7 @@ namespace MeasureTheory
 
 theorem measurableSet_generateFrom_singleton_iff {s t : Set α} :
     MeasurableSet[MeasurableSpace.generateFrom {s}] t ↔ t = ∅ ∨ t = s ∨ t = sᶜ ∨ t = univ := by
-  simp_rw [MeasurableSpace.generateFrom_singleton]
+  simp_rw +instances [MeasurableSpace.generateFrom_singleton]
   unfold MeasurableSet MeasurableSpace.MeasurableSet' MeasurableSpace.comap
   simp_rw [MeasurableSpace.measurableSet_top, true_and]
   constructor
@@ -77,7 +77,7 @@ namespace Filter
 
 variable [MeasurableSpace α]
 
-/-- A filter `f` is measurably generates if each `s ∈ f` includes a measurable `t ∈ f`. -/
+/-- A filter `f` is measurably generated if each `s ∈ f` includes a measurable `t ∈ f`. -/
 class IsMeasurablyGenerated (f : Filter α) : Prop where
   exists_measurable_subset : ∀ ⦃s⦄, s ∈ f → ∃ t ∈ f, MeasurableSet t ∧ t ⊆ s
 
@@ -217,7 +217,7 @@ instance Subtype.instLawfulSingleton [MeasurableSingletonClass α] :
     LawfulSingleton α (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨fun _ => Subtype.ext <| insert_empty_eq _⟩
 
-instance Subtype.instHasCompl : HasCompl (Subtype (MeasurableSet : Set α → Prop)) :=
+instance Subtype.instCompl : Compl (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨fun x => ⟨xᶜ, x.prop.compl⟩⟩
 
 @[simp]

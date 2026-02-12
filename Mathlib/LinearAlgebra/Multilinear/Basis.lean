@@ -38,9 +38,6 @@ theorem Module.Basis.ext_multilinear [Finite ι] {f g : MultilinearMap R M N} {�
   simp_rw [(e _).repr_symm_apply, Finsupp.linearCombination_apply, Finsupp.sum,
     map_sum_finset, map_smul_univ, h]
 
-@[deprecated (since := "2025-05-12")]
-alias Basis.ext_multilinear_fin := Module.Basis.ext_multilinear
-
 namespace Basis
 
 open Module
@@ -65,10 +62,10 @@ theorem multilinearMap_apply (i : (Π i, κ i) × ι') :
       ((LinearMap.id (M := R)).smulRight (b' i.2)).compMultilinearMap
         (MultilinearMap.mkPiRing R ι 1 |>.compLinearMap fun i' => (b i').coord (i.1 i')) := by
   ext x
-  simp only [multilinearMap, Basis.coe_ofRepr, LinearEquiv.trans_symm, LinearEquiv.symm_symm,
-    LinearEquiv.trans_apply, LinearEquiv.multilinearMapCongrRight_symm_apply, Basis.coe_repr_symm,
-    LinearEquiv.multilinearMapCongrLeft_symm_apply, compLinearMap_apply, LinearEquiv.coe_coe,
-    LinearMap.compMultilinearMap_apply, freeFinsuppEquiv_single, one_smul,
+  simp +instances only [multilinearMap, Basis.coe_ofRepr, LinearEquiv.trans_symm,
+    LinearEquiv.symm_symm, LinearEquiv.trans_apply, LinearEquiv.multilinearMapCongrRight_symm_apply,
+    Basis.coe_repr_symm, LinearEquiv.multilinearMapCongrLeft_symm_apply, compLinearMap_apply,
+    LinearEquiv.coe_coe, LinearMap.compMultilinearMap_apply, freeFinsuppEquiv_single, one_smul,
     Finsupp.linearCombination_single, Basis.coord_apply, mkPiRing_apply, smul_eq_mul, mul_one,
     LinearMap.coe_smulRight, LinearMap.id_coe, id_eq, Subsingleton.elim (Fintype.ofFinite ι)]
 

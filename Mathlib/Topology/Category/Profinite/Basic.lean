@@ -46,7 +46,7 @@ universe v u
 open CategoryTheory Topology CompHausLike
 
 /-- The type of profinite topological spaces. -/
-@[to_additive self]
+@[to_additive_do_translate] -- This is required
 abbrev Profinite := CompHausLike (fun X ↦ TotallyDisconnectedSpace X)
 
 namespace Profinite
@@ -125,6 +125,7 @@ theorem CompHaus.toProfinite_obj' (X : CompHaus) :
   rfl
 
 /-- Finite types are given the discrete topology. -/
+@[instance_reducible]
 def FintypeCat.botTopology (A : FintypeCat) : TopologicalSpace A := ⊥
 
 section DiscreteTopology

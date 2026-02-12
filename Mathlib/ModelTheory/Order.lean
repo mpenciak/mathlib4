@@ -353,7 +353,7 @@ variable (L) [IsOrdered L] (M) [L.Structure M]
 
 /-- Any structure in an ordered language can be ordered correspondingly. -/
 def leOfStructure : LE M where
-  le a b := Structure.RelMap (leSymb : L.Relations 2) ![a,b]
+  le a b := Structure.RelMap (leSymb : L.Relations 2) ![a, b]
 
 instance : @OrderedStructure L M _ (L.leOfStructure M) _ := by
   letI := L.leOfStructure M
@@ -365,7 +365,7 @@ instance : @OrderedStructure L M _ (L.leOfStructure M) _ := by
 /-- The order structure on an ordered language is decidable. -/
 -- This should not be a global instance,
 -- because it will match with any `LE` typeclass search
-@[local instance]
+@[instance_reducible, local instance]
 def decidableLEOfStructure
     [h : DecidableRel (fun (a b : M) => Structure.RelMap (leSymb : L.Relations 2) ![a, b])] :
     letI := L.leOfStructure M
@@ -449,7 +449,7 @@ lemma StrongHomClass.toOrderIsoClass
     (F : Type*) [EquivLike F M N] [L.StrongHomClass F M N] :
     OrderIsoClass F M N where
   map_le_map_iff f a b := by
-    have h := StrongHomClass.map_rel f leSymb ![a,b]
+    have h := StrongHomClass.map_rel f leSymb ![a, b]
     simp only [relMap_leSymb, Fin.isValue, Function.comp_apply, Matrix.cons_val_zero,
       Matrix.cons_val_one] at h
     exact h

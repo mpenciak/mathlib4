@@ -11,7 +11,7 @@ public import Mathlib.MeasureTheory.Measure.Typeclasses.Finite
 # Subtraction of measures
 
 In this file we define `μ - ν` to be the least measure `τ` such that `μ ≤ τ + ν`.
-It is the equivalent of `(μ - ν) ⊔ 0` if `μ` and `ν` were signed measures.
+It is equivalent to `(μ - ν) ⊔ 0` if `μ` and `ν` were signed measures.
 Compare with `ENNReal.instSub`.
 Specifically, note that if you have `α = {1,2}`, and `μ {1} = 2`, `μ {2} = 0`, and
 `ν {2} = 2`, `ν {1} = 0`, then `(μ - ν) {1, 2} = 2`. However, if `μ ≤ ν`, and
@@ -27,7 +27,7 @@ namespace MeasureTheory
 namespace Measure
 
 /-- The measure `μ - ν` is defined to be the least measure `τ` such that `μ ≤ τ + ν`.
-It is the equivalent of `(μ - ν) ⊔ 0` if `μ` and `ν` were signed measures.
+It is equivalent to `(μ - ν) ⊔ 0` if `μ` and `ν` were signed measures.
 Compare with `ENNReal.instSub`.
 Specifically, note that if you have `α = {1,2}`, and `μ {1} = 2`, `μ {2} = 0`, and
 `ν {2} = 2`, `ν {1} = 0`, then `(μ - ν) {1, 2} = 2`. However, if `μ ≤ ν`, and
@@ -89,7 +89,7 @@ theorem sub_apply [IsFiniteMeasure ν] (h₁ : MeasurableSet s) (h₂ : ν ≤ �
     rw [MeasureTheory.Measure.sub_def]
     apply le_antisymm
     · apply sInf_le
-      simp [le_refl, add_comm, h_measure_sub_add]
+      simp [add_comm, h_measure_sub_add]
     apply le_sInf
     intro d h_d
     rw [← h_measure_sub_add, mem_setOf_eq, add_comm d] at h_d

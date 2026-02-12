@@ -44,10 +44,14 @@ variable {C : Type u} [Category.{v} C] [Preadditive C] [HasFiniteBiproducts C]
 namespace leftExactFunctorForgetEquivalence
 
 attribute [local instance] hasFiniteProducts_of_hasFiniteBiproducts
+
+-- This was deprecated on 2025-10-10 but is still used as a local instance here!
 attribute [local instance] AddCommGrpCat.cartesianMonoidalCategoryAddCommGrp
 
+set_option backward.privateInPublic true in
 private noncomputable local instance : CartesianMonoidalCategory C := .ofHasFiniteProducts
 
+set_option backward.privateInPublic true in
 private noncomputable local instance : BraidedCategory C := .ofCartesianMonoidalCategory
 
 /-- Implementation, see `leftExactFunctorForgetEquivalence`. -/
