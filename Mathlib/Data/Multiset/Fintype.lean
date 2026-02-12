@@ -175,6 +175,8 @@ this was `@[irreducible]`, which is no longer allowed. -/
 instance fintypeCoe : Fintype m :=
   Fintype.ofEquiv m.toEnumFinset m.coeEquiv.symm
 
+attribute [irreducible] fintypeCoe
+
 theorem map_univ_coeEmbedding (m : Multiset α) :
     (Finset.univ : Finset m).map m.coeEmbedding = m.toEnumFinset := by
   ext ⟨x, i⟩
