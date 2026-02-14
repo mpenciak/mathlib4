@@ -38,7 +38,7 @@ namespace CategoryTheory
 
 /-- A category is `EssentiallySmall.{w}` if there exists
 an equivalence to some `S : Type w` with `[SmallCategory S]`. -/
-@[pp_with_univ]
+@[univ_out_params, pp_with_univ]
 class EssentiallySmall (C : Type u) [Category.{v} C] : Prop where
   /-- An essentially small category is equivalent to some small category. -/
   equiv_smallCategory : ∃ (S : Type w) (_ : SmallCategory S), Nonempty (C ≌ S)
@@ -88,7 +88,7 @@ theorem essentiallySmallSelf : EssentiallySmall.{max w v u} C :=
 
 See `ShrinkHoms C` for a category instance where every hom set has been replaced by a small model.
 -/
-@[pp_with_univ]
+@[univ_out_params, pp_with_univ]
 class LocallySmall (C : Type u) [Category.{v} C] : Prop where
   /-- A locally small category has small hom-types. -/
   hom_small : ∀ X Y : C, Small.{w} (X ⟶ Y) := by infer_instance
