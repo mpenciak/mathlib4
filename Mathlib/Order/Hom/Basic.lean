@@ -1087,6 +1087,8 @@ namespace Equiv
 
 variable [Preorder α] [Preorder β]
 
+/-- If `e` is an equivalence with monotone forward and inverse maps, then `e` is an
+order isomorphism. -/
 def toOrderIso (e : α ≃ β) (h₁ : Monotone e) (h₂ : Monotone e.symm) : α ≃o β :=
   ⟨e, ⟨fun h => by simpa only [e.symm_apply_apply] using h₂ h, fun h => h₁ h⟩⟩
 

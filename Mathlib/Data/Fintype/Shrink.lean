@@ -17,8 +17,6 @@ public import Mathlib.Data.Fintype.EquivFin
 universe u v
 variable {α : Type u} [Fintype α]
 
-instance Finite.small {α : Type u} [Finite α] : Small.{v} α := Countable.toSmall α
-
 noncomputable instance Shrink.instFintype : Fintype (Shrink.{v} α) := .ofEquiv _ (equivShrink _)
 
 instance Shrink.instFinite {α : Type u} [Finite α] : Finite (Shrink.{v} α) :=

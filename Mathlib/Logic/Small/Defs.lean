@@ -27,9 +27,13 @@ See `Mathlib/Logic/Small/Basic.lean` for further instances and theorems.
 
 universe u w v v'
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12423 and https://github.com/leanprover/lean4/pull/12286,
+we need to use `univ_out_params` here.
+Either `univ_out_params` or `univ_out_params v` seems to work.
+-/
 /-- A type is `Small.{w}` if there exists an equivalence to some `S : Type w`.
 -/
-@[mk_iff, pp_with_univ]
+@[univ_out_params v, mk_iff, pp_with_univ]
 class Small (α : Type v) : Prop where
   /-- If a type is `Small.{w}`, then there exists an equivalence with some `S : Type w` -/
   equiv_small : ∃ S : Type w, Nonempty (α ≃ S)

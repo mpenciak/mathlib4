@@ -116,7 +116,6 @@ instance (priority := 100) locallySmall_self (C : Type u) [Category.{v} C] :
 
 instance (priority := 100) locallySmall_of_univLE (C : Type u) [Category.{v} C] [UnivLE.{v, w}] :
     LocallySmall.{w} C where
-  hom_small _ _ := UnivLE.small _
 
 theorem locallySmall_max {C : Type u} [Category.{v} C] : LocallySmall.{max v w} C where
   hom_small _ _ := small_max.{w} _
@@ -268,7 +267,6 @@ end FullSubcategory
 -/
 instance (priority := 100) locallySmall_of_thin {C : Type u} [Category.{v} C] [Quiver.IsThin C] :
     LocallySmall.{w} C where
-  hom_small _ _ := small_subsingleton _
 
 /--
 A thin category is essentially small if and only if the underlying type of its skeleton is small.

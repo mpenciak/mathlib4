@@ -61,10 +61,10 @@ theorem UnivLE.trans [UnivLE.{u, v}] [UnivLE.{v, w}] : UnivLE.{u, w} where
   small α := Small.trans_univLE α
 
 instance UnivLE.self : UnivLE.{u, u} := ⟨inferInstance⟩
-instance UnivLE.zero : UnivLE.{0, u} := ⟨small_zero⟩
+instance UnivLE.zero : UnivLE.{0, u} := ⟨inferInstance⟩
 
 /-- This is redundant as an instance given the below. -/
-theorem UnivLE.succ [UnivLE.{u, v}] : UnivLE.{u, v + 1} := @UnivLE.trans _ ⟨small_succ⟩
+theorem UnivLE.succ [UnivLE.{u, v}] : UnivLE.{u, v + 1} := @UnivLE.trans _ ⟨inferInstance⟩
 
 /- This is the crucial instance that subsumes `univLE_max`. -/
 instance univLE_of_max [UnivLE.{max u v, v}] : UnivLE.{u, v} := @UnivLE.trans univLE_max ‹_›
