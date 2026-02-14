@@ -122,32 +122,21 @@ def map (N : G(k, (A ⊗[R] M); A)) : G(k, (B ⊗[R] M); B) :=
 
 variable (R M k)
 
-/-- The Grassmannian functor sends an `R`-algebra `A` to `G(k, A ⊗[R] M; A)`. -/
-def functor : CommAlgCat.{w, u} R ⥤ Type (max v w) where
-  obj A := G(k, (A ⊗[R] M); A)
-  map {A B} f := by
-    letI : Algebra A B := f.hom.toAlgebra
-    haveI : IsScalarTower R A B := IsScalarTower.of_algebraMap_eq' (by
-      ext r; simp only [RingHom.comp_apply]; exact (f.hom.commutes r).symm)
-    exact map A B
-  map_id := by
-    intro A
+theorem map_id (A : CommAlgCat R) : map A A = 𝟙 G(k, A ⊗[R] M; A)  := by
     ext1 N
-    simp only [CommAlgCat.hom_id, AlgHom.toRingHom_eq_coe, AlgHom.id_toRingHom, types_id_apply]
+    rw [types_id_apply]
     ext x
     simp only [map, cancelBaseChange_self_eq_lid, LinearMap.mem_ker, LinearMap.coe_comp,
                LinearEquiv.coe_coe, Function.comp_apply, TensorProduct.lid_symm_apply,
                LinearMap.baseChange_tmul, Submodule.mkQ_apply]
     rw [← (TensorProduct.lid A ((A ⊗[R] M) ⧸ N.toSubmodule)).injective.eq_iff]
     simp only [TensorProduct.lid_tmul, map_zero, one_smul, Submodule.Quotient.mk_eq_zero]
-  map_comp := by
-    intro A B C f g
-    algebraize [f.hom.toRingHom, g.hom.toRingHom, (f ≫ g).hom.toRingHom]
-    haveI : IsScalarTower A B C := IsScalarTower.of_algebraMap_eq' (by
-      ext a
-      change ((g.hom.comp f.hom) a) = g.hom (f.hom a)
-      simp [AlgHom.comp_apply])
-    ext1 N
+
+theorem map_comp {A B C : CommAlgCat R}
+    [Algebra A B] [Algebra B C] [Algebra A C]
+    [IsScalarTower R A B] [IsScalarTower R B C] [IsScalarTower R A C]
+    [IsScalarTower A B C] (N : G(k, A ⊗[R] M; A)) :
+    map A C N = map B C (map A B N) := by
     ext x
     let fAB := N.toSubmodule.mkQ.baseChange B ∘ₗ (cancelBaseChange _ _ _ _ _).symm.toLinearMap
     let fAC := N.toSubmodule.mkQ.baseChange C ∘ₗ (cancelBaseChange _ _ _ _ _).symm.toLinearMap
@@ -167,6 +156,23 @@ def functor : CommAlgCat.{w, u} R ⥤ Type (max v w) where
         simp only [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, map_add] at *
         rw [hx, hy]
     simp [map, fAB, fAC, fBC, hcomp ▸ LinearEquiv.ker_comp e fBC]
+
+/-- The Grassmannian functor sends an `R`-algebra `A` to `G(k, A ⊗[R] M; A)`. -/
+def functor : CommAlgCat.{w, u} R ⥤ Type (max v w) where
+  obj A := G(k, (A ⊗[R] M); A)
+  map {A B} f := by
+    letI : Algebra A B := f.hom.toAlgebra
+    haveI : IsScalarTower R A B := IsScalarTower.of_algebraMap_eq' (by
+      ext r; simp only [RingHom.comp_apply]; exact (f.hom.commutes r).symm)
+    exact map A B
+  map_id A := map_id R M k A
+  map_comp {A B C} f g  := by
+    algebraize [f.hom.toRingHom, g.hom.toRingHom, (f ≫ g).hom.toRingHom]
+    haveI : IsScalarTower A B C := IsScalarTower.of_algebraMap_eq' (by
+      ext a
+      change ((g.hom.comp f.hom) a) = g.hom (f.hom a)
+      simp [AlgHom.comp_apply])
+    exact funext (map_comp R M k)
 
 end Functor
 
