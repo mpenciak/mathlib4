@@ -92,73 +92,33 @@ variable (A : Type w) [CommRing A] [Algebra R A]
 variable (B : Type w) [CommRing B] [Algebra R B]
 variable [Algebra A B] [IsScalarTower R A B]
 
-lemma cancelBaseChange_eq_lid :
-    cancelBaseChange R A A A M = TensorProduct.lid A (A ⊗[R] M) := by
-  ext x
-  induction x using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
-  | tmul b y =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a m =>
-      simp only [cancelBaseChange_tmul, lid_tmul, smul_tmul', smul_eq_mul, mul_comm]
-    | add x y hx hy =>
-      simp only [tmul_add, map_add, lid_tmul, hx, hy]
-  | add x y hx hy => simp [hx, hy]
-
 lemma baseChange_mkQ_surjective (N : G(k, (A ⊗[R] M); A)) :
     Function.Surjective
-      ((Submodule.mkQ N.toSubmodule).baseChange B ∘ₗ
+      (N.toSubmodule.mkQ.baseChange B ∘ₗ
         (cancelBaseChange R A B B M).symm.toLinearMap) := by
-  intro y
-  induction y using TensorProduct.induction_on with
-  | zero => exact ⟨0, map_zero _⟩
-  | tmul b q =>
-    obtain ⟨a_m, rfl⟩ := Submodule.Quotient.mk_surjective N.toSubmodule q
-    exact ⟨(cancelBaseChange R A B B M) (b ⊗ₜ[A] a_m), by simp⟩
-  | add x y hx hy =>
-    obtain ⟨x', hx'⟩ := hx
-    obtain ⟨y', hy'⟩ := hy
-    exact ⟨x' + y', by rw [map_add, hx', hy']⟩
+  apply
+    ((cancelBaseChange R A B B M).symm.surjective_comp (LinearMap.baseChange B N.mkQ)).mpr
+  rw [LinearMap.baseChange_eq_ltensor]
+  exact LinearMap.lTensor_surjective _ <| Submodule.mkQ_surjective N.toSubmodule
 
 /-- The map on Grassmannians induced by base change along an algebra map `A → B`.
 Given a submodule `N` of `A ⊗[R] M`, the image is the kernel of the composition
 `B ⊗[R] M ≃ B ⊗[A] (A ⊗[R] M) → B ⊗[A] ((A ⊗[R] M) ⧸ N)`. -/
-def map (N : G(k, (A ⊗[R] M); A)) : G(k, (B ⊗[R] M); B) where
-  toSubmodule :=
-    let f := (Submodule.mkQ N.toSubmodule).baseChange B ∘ₗ
-      (cancelBaseChange R A B B M).symm.toLinearMap
-    f.ker
-  finite_quotient := by
-    let f := (Submodule.mkQ N.toSubmodule).baseChange B ∘ₗ
-             (cancelBaseChange R A B B M).symm.toLinearMap
-    have equiv := f.quotKerEquivOfSurjective (baseChange_mkQ_surjective A B N)
-    exact Module.Finite.equiv equiv.symm
-  projective_quotient := by
-    let f := (Submodule.mkQ N.toSubmodule).baseChange B ∘ₗ
-               (cancelBaseChange R A B B M).symm.toLinearMap
-    have equiv := f.quotKerEquivOfSurjective (baseChange_mkQ_surjective A B N)
-    exact Module.Projective.of_equiv equiv.symm
-  rankAtStalk_eq := by
-    intro p
-    let f := (Submodule.mkQ N.toSubmodule).baseChange B ∘ₗ
-             (cancelBaseChange R A B B M).symm.toLinearMap
-    have equiv := f.quotKerEquivOfSurjective (baseChange_mkQ_surjective A B N)
-    have hEquiv := Module.rankAtStalk_eq_of_equiv (R:=B)
-        (M:= (B ⊗[R] M ⧸ f.ker))
-        (N:= B ⊗[A] ((A ⊗[R] M) ⧸ N.toSubmodule)) equiv
-    have h1 : rankAtStalk (R:=B) (B ⊗[R] M ⧸ f.ker) p =
-        rankAtStalk (R:=B) (B ⊗[A] ((A ⊗[R] M) ⧸ N.toSubmodule)) p := by
-      simpa using congrArg (fun g => g p) hEquiv
-    have h2 := Module.rankAtStalk_baseChange (R:=A)
-      (M:= (A ⊗[R] M ⧸ N.toSubmodule)) (S:=B) (p:=p)
-    calc
-      rankAtStalk (R:=B) (B ⊗[R] M ⧸ f.ker) p
-          = rankAtStalk (R:=B) (B ⊗[A] ((A ⊗[R] M) ⧸ N.toSubmodule)) p := h1
-      _ = rankAtStalk (R:=A) ((A ⊗[R] M ⧸ N.toSubmodule))
-        (PrimeSpectrum.comap (algebraMap A B) p) := by
-        simpa using h2
-      _ = k := N.rankAtStalk_eq _
+def map (N : G(k, (A ⊗[R] M); A)) : G(k, (B ⊗[R] M); B) :=
+  letI f := N.toSubmodule.mkQ.baseChange B ∘ₗ
+    (cancelBaseChange R A B B M).symm.toLinearMap
+  haveI equiv := f.quotKerEquivOfSurjective (baseChange_mkQ_surjective A B N)
+  { toSubmodule := f.ker
+    finite_quotient := Module.Finite.equiv equiv.symm
+    projective_quotient := Module.Projective.of_equiv equiv.symm
+    rankAtStalk_eq p := by
+      calc
+        _ = rankAtStalk (R := B) (B ⊗[A] ((A ⊗[R] M) ⧸ N.toSubmodule)) p := by
+          simpa using congrArg (fun g => g p) <| Module.rankAtStalk_eq_of_equiv equiv
+        _ = rankAtStalk (R := A) (A ⊗[R] M ⧸ N.toSubmodule)
+            (PrimeSpectrum.comap (algebraMap A B) p) := by
+          simpa using Module.rankAtStalk_baseChange ..
+        _ = k := N.rankAtStalk_eq _ }
 
 variable (R M k)
 
@@ -175,57 +135,38 @@ def functor : CommAlgCat.{w, u} R ⥤ Type (max v w) where
     ext1 N
     simp only [CommAlgCat.hom_id, AlgHom.toRingHom_eq_coe, AlgHom.id_toRingHom, types_id_apply]
     ext x
-    simp only [map, cancelBaseChange_eq_lid, LinearMap.mem_ker, LinearMap.coe_comp,
+    simp only [map, cancelBaseChange_self_eq_lid, LinearMap.mem_ker, LinearMap.coe_comp,
                LinearEquiv.coe_coe, Function.comp_apply, TensorProduct.lid_symm_apply,
                LinearMap.baseChange_tmul, Submodule.mkQ_apply]
     rw [← (TensorProduct.lid A ((A ⊗[R] M) ⧸ N.toSubmodule)).injective.eq_iff]
     simp only [TensorProduct.lid_tmul, map_zero, one_smul, Submodule.Quotient.mk_eq_zero]
   map_comp := by
     intro A B C f g
-    letI : Algebra A B := f.hom.toAlgebra
-    letI : Algebra B C := g.hom.toAlgebra
-    letI : Algebra A C := (g.hom.comp f.hom).toAlgebra
-    haveI : IsScalarTower R A B := IsScalarTower.of_algebraMap_eq' (by
-      ext r; simp only [RingHom.comp_apply]; exact (f.hom.commutes r).symm)
-    haveI : IsScalarTower R B C := IsScalarTower.of_algebraMap_eq' (by
-      ext r; simp only [RingHom.comp_apply]; exact (g.hom.commutes r).symm)
-    haveI : IsScalarTower R A C := IsScalarTower.of_algebraMap_eq' (by
-      ext r; exact (g.hom.comp f.hom).commutes r |>.symm)
+    algebraize [f.hom.toRingHom, g.hom.toRingHom, (f ≫ g).hom.toRingHom]
     haveI : IsScalarTower A B C := IsScalarTower.of_algebraMap_eq' (by
       ext a
       change ((g.hom.comp f.hom) a) = g.hom (f.hom a)
       simp [AlgHom.comp_apply])
     ext1 N
     ext x
-    let Q : Type (max v w) := (A ⊗[R] M) ⧸ N.toSubmodule
-    let fAB : B ⊗[R] M →ₗ[B] B ⊗[A] Q :=
-      (Submodule.mkQ N.toSubmodule).baseChange B ∘ₗ
-        (cancelBaseChange R A B B M).symm.toLinearMap
-    let eAB := fAB.quotKerEquivOfSurjective (baseChange_mkQ_surjective A B N)
-    let eAB_C :=
-      LinearEquiv.baseChange (R:=B) (A:=C) (M:= (B ⊗[R] M ⧸ fAB.ker)) (N:= B ⊗[A] Q) eAB
-    let eAssoc := cancelBaseChange A B C C Q
-    let e := eAB_C.trans eAssoc
-    let fAC : C ⊗[R] M →ₗ[C] C ⊗[A] Q :=
-      (Submodule.mkQ N.toSubmodule).baseChange C ∘ₗ
-        (cancelBaseChange R A C C M).symm.toLinearMap
-    let fBC : C ⊗[R] M →ₗ[C] C ⊗[B] (B ⊗[R] M ⧸ fAB.ker) :=
-      (Submodule.mkQ (LinearMap.ker fAB)).baseChange C ∘ₗ
-        (cancelBaseChange R B C C M).symm.toLinearMap
-    have hcomp : (e.toLinearMap.comp fBC) = fAC := by
+    let fAB := N.toSubmodule.mkQ.baseChange B ∘ₗ (cancelBaseChange _ _ _ _ _).symm.toLinearMap
+    let fAC := N.toSubmodule.mkQ.baseChange C ∘ₗ (cancelBaseChange _ _ _ _ _).symm.toLinearMap
+    let fBC := fAB.ker.mkQ.baseChange C ∘ₗ (cancelBaseChange _ _ _ _ _).symm.toLinearMap
+    let e := (fAB.quotKerEquivOfSurjective (baseChange_mkQ_surjective _ _ _)).baseChange _ _
+        ≪≫ₗ cancelBaseChange _ _ _ C _
+    have hcomp : e.toLinearMap.comp fBC = fAC := by
       apply LinearMap.ext
       intro z
       induction z using TensorProduct.induction_on with
-      | zero => simp [fAC, fBC, e, eAssoc, eAB_C, eAB, fAB, Q]
+      | zero => simp [fAC, fBC, e]
       | tmul c m =>
-        simp [fAC, fBC, e, eAssoc, eAB_C, eAB, fAB, Q,
-          LinearMap.baseChange_tmul, cancelBaseChange_symm_tmul, LinearEquiv.baseChange_tmul,
-          cancelBaseChange_tmul, LinearMap.quotKerEquivOfSurjective_apply_mk]
+        simp [fAB, fAC, fBC, e, LinearMap.baseChange_tmul, cancelBaseChange_symm_tmul,
+          LinearEquiv.baseChange_tmul, cancelBaseChange_tmul,
+          LinearMap.quotKerEquivOfSurjective_apply_mk]
       | add x y hx hy =>
-        simp only [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, map_add] at hx hy ⊢
+        simp only [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, map_add] at *
         rw [hx, hy]
-    have hker : fAC.ker = fBC.ker := hcomp ▸ LinearEquiv.ker_comp e fBC
-    simp [map, fAB, fAC, fBC, hker]
+    simp [map, fAB, fAC, fBC, hcomp ▸ LinearEquiv.ker_comp e fBC]
 
 end Functor
 

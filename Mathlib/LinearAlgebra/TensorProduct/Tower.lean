@@ -455,6 +455,20 @@ theorem lTensor_comp_cancelBaseChange (f : N →ₗ[R] Q) :
       (cancelBaseChange R A B M Q).toLinearMap ∘ₗ lTensor _ _ (lTensor _ _ f) := by
   ext; simp
 
+lemma cancelBaseChange_self_eq_lid :
+    cancelBaseChange R A A A N = TensorProduct.lid A (A ⊗[R] N) := by
+  ext x
+  induction x using TensorProduct.induction_on with
+  | zero => simp only [map_zero]
+  | tmul b y =>
+    induction y using TensorProduct.induction_on with
+    | zero => simp
+    | tmul a m =>
+      simp only [cancelBaseChange_tmul, lid_tmul, smul_tmul', smul_eq_mul, mul_comm]
+    | add x y hx hy =>
+      simp only [tmul_add, map_add, lid_tmul, hx, hy]
+  | add x y hx hy => simp [hx, hy]
+
 end cancelBaseChange
 
 section leftComm
