@@ -93,11 +93,9 @@ variable (B : Type w) [CommRing B] [Algebra R B]
 variable [Algebra A B] [IsScalarTower R A B]
 
 lemma baseChange_mkQ_surjective (N : G(k, (A ⊗[R] M); A)) :
-    Function.Surjective
-      (N.toSubmodule.mkQ.baseChange B ∘ₗ
-        (cancelBaseChange R A B B M).symm.toLinearMap) := by
-  apply
-    ((cancelBaseChange R A B B M).symm.surjective_comp (LinearMap.baseChange B N.mkQ)).mpr
+    Function.Surjective (N.toSubmodule.mkQ.baseChange B ∘ₗ
+      (cancelBaseChange R A B B M).symm.toLinearMap) := by
+  apply ((cancelBaseChange R A B B M).symm.surjective_comp (LinearMap.baseChange B N.mkQ)).mpr
   rw [LinearMap.baseChange_eq_ltensor]
   exact LinearMap.lTensor_surjective _ <| Submodule.mkQ_surjective N.toSubmodule
 
@@ -105,8 +103,7 @@ lemma baseChange_mkQ_surjective (N : G(k, (A ⊗[R] M); A)) :
 Given a submodule `N` of `A ⊗[R] M`, the image is the kernel of the composition
 `B ⊗[R] M ≃ B ⊗[A] (A ⊗[R] M) → B ⊗[A] ((A ⊗[R] M) ⧸ N)`. -/
 def map (N : G(k, (A ⊗[R] M); A)) : G(k, (B ⊗[R] M); B) :=
-  letI f := N.toSubmodule.mkQ.baseChange B ∘ₗ
-    (cancelBaseChange R A B B M).symm.toLinearMap
+  letI f := N.toSubmodule.mkQ.baseChange B ∘ₗ (cancelBaseChange R A B B M).symm.toLinearMap
   haveI equiv := f.quotKerEquivOfSurjective (baseChange_mkQ_surjective A B N)
   { toSubmodule := f.ker
     finite_quotient := Module.Finite.equiv equiv.symm
