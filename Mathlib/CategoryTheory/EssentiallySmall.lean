@@ -36,12 +36,12 @@ variable (C : Type u) [Category.{v} C]
 
 namespace CategoryTheory
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
-the smallness universe `w` in `EssentiallySmall` and `LocallySmall` would default to a
-universe output parameter.
-See Note [universe output parameters and typeclass caching]. -/
 /-- A category is `EssentiallySmall.{w}` if there exists
 an equivalence to some `S : Type w` with `[SmallCategory S]`. -/
+-- After https://github.com/leanprover/lean4/pull/12286 and
+-- https://github.com/leanprover/lean4/pull/12423, the smallness universe `w` in
+-- `EssentiallySmall` and `LocallySmall` would default to a universe output parameter.
+-- See Note [universe output parameters and typeclass caching].
 @[univ_out_params, pp_with_univ]
 class EssentiallySmall (C : Type u) [Category.{v} C] : Prop where
   /-- An essentially small category is equivalent to some small category. -/
@@ -92,6 +92,7 @@ theorem essentiallySmallSelf : EssentiallySmall.{max w v u} C :=
 
 See `ShrinkHoms C` for a category instance where every hom set has been replaced by a small model.
 -/
+-- See comment on `EssentiallySmall` above.
 @[univ_out_params, pp_with_univ]
 class LocallySmall (C : Type u) [Category.{v} C] : Prop where
   /-- A locally small category has small hom-types. -/

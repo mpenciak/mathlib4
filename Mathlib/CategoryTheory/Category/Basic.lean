@@ -222,12 +222,13 @@ elab (name := cat_disch) "cat_disch" : tactic =>
 
 set_option mathlib.tactic.category.grind true
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
-the morphism universe `v` would default to being a universe output parameter.
-See Note [universe output parameters and typeclass caching]. -/
 /-- The typeclass `Category C` describes morphisms associated to objects of type `C`.
 The universe levels of the objects and morphisms are unconstrained, and will often need to be
 specified explicitly, as `Category.{v} C`. (See also `LargeCategory` and `SmallCategory`.) -/
+-- After https://github.com/leanprover/lean4/pull/12286 and
+-- https://github.com/leanprover/lean4/pull/12423, the morphism universe `v` would default to
+-- being a universe output parameter.
+-- See Note [universe output parameters and typeclass caching].
 @[univ_out_params, pp_with_univ, stacks 0014]
 class Category (obj : Type u) : Type max u (v + 1) extends CategoryStruct.{v} obj where
   /-- Identity morphisms are left identities for composition. -/

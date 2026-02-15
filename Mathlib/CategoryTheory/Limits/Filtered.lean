@@ -69,11 +69,11 @@ section
 
 variable (C)
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
-the shape universes in `HasCofilteredLimitsOfSize` and `HasFilteredColimitsOfSize` would default
-to universe output parameters.
-See Note [universe output parameters and typeclass caching]. -/
 /-- Class for having all cofiltered limits of a given size. -/
+-- After https://github.com/leanprover/lean4/pull/12286 and
+-- https://github.com/leanprover/lean4/pull/12423, the shape universes in
+-- `HasCofilteredLimitsOfSize` and `HasFilteredColimitsOfSize` would default to universe
+-- output parameters. See Note [universe output parameters and typeclass caching].
 @[univ_out_params, pp_with_univ]
 class HasCofilteredLimitsOfSize : Prop where
   /-- For all filtered types of size `w`, we have limits -/

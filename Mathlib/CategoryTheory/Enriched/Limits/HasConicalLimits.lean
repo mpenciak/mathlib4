@@ -68,13 +68,13 @@ class HasConicalLimitsOfShape : Prop where
 
 attribute [instance] HasConicalLimitsOfShape.hasConicalLimit
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
-the shape universes `v₁, u₁` would default to universe output parameters.
-See Note [universe output parameters and typeclass caching]. -/
 /--
 `C` has all conical limits of size `v₁ u₁` (`HasLimitsOfSize.{v₁ u₁} C`)
 if it has conical limits of every shape `J : Type u₁` with `[Category.{v₁} J]`.
 -/
+-- After https://github.com/leanprover/lean4/pull/12286 and
+-- https://github.com/leanprover/lean4/pull/12423, the shape universes `v₁, u₁` would default
+-- to universe output parameters. See Note [universe output parameters and typeclass caching].
 @[univ_out_params, pp_with_univ]
 class HasConicalLimitsOfSize : Prop where
   /-- All functors `F : J ⥤ C` from all small `J` have conical limits -/

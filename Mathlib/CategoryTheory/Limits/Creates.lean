@@ -80,12 +80,12 @@ class CreatesLimit (K : J ⥤ C) (F : C ⥤ D) extends ReflectsLimit K F where
 class CreatesLimitsOfShape (J : Type w) [Category.{w'} J] (F : C ⥤ D) where
   CreatesLimit : ∀ {K : J ⥤ C}, CreatesLimit K F := by infer_instance
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
-the shape universes in `CreatesLimitsOfSize` and `CreatesColimitsOfSize` would default to
-universe output parameters.
-See Note [universe output parameters and typeclass caching]. -/
 -- This should be used with explicit universe variables.
 /-- `F` creates limits if it creates limits of shape `J` for any `J`. -/
+-- After https://github.com/leanprover/lean4/pull/12286 and
+-- https://github.com/leanprover/lean4/pull/12423, the shape universes in
+-- `CreatesLimitsOfSize` and `CreatesColimitsOfSize` would default to universe output parameters.
+-- See Note [universe output parameters and typeclass caching].
 @[univ_out_params, nolint checkUnivs, pp_with_univ]
 class CreatesLimitsOfSize (F : C ⥤ D) where
   CreatesLimitsOfShape : ∀ {J : Type w} [Category.{w'} J], CreatesLimitsOfShape J F := by

@@ -27,13 +27,12 @@ See `Mathlib/Logic/Small/Basic.lean` for further instances and theorems.
 
 universe u w v v'
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
-the type universe `v` of `α` would default to a universe output parameter.
-Marking `v` as output is actually correct here (it *is* determined by `α`), but we still
-need the attribute to prevent `w` from also being treated as output.
-See Note [universe output parameters and typeclass caching]. -/
 /-- A type is `Small.{w}` if there exists an equivalence to some `S : Type w`.
 -/
+-- After https://github.com/leanprover/lean4/pull/12286 and
+-- https://github.com/leanprover/lean4/pull/12423: `v` is a true output (determined by `α`),
+-- but we need the attribute to prevent `w` from also being treated as output.
+-- See Note [universe output parameters and typeclass caching].
 @[univ_out_params v, mk_iff, pp_with_univ]
 class Small (α : Type v) : Prop where
   /-- If a type is `Small.{w}`, then there exists an equivalence with some `S : Type w` -/

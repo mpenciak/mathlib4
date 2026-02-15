@@ -71,9 +71,6 @@ lemma continuous_from_compactlyGenerated [TopologicalSpace X] [t : TopologicalSp
   rw [continuous_coinduced_dom]
   continuity
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
-the compact space universe `u` would default to a universe output parameter.
-See Note [universe output parameters and typeclass caching]. -/
 /--
 A topological space `X` is compactly generated if its topology is finer than (and thus equal to)
 the compactly generated topology, i.e. it is coinduced by the continuous maps from compact
@@ -83,6 +80,9 @@ This version includes an explicit universe parameter `u` which should always be 
 intended for categorical purposes. See `CompactlyGeneratedSpace` for the version without this
 parameter, intended for topological purposes.
 -/
+-- After https://github.com/leanprover/lean4/pull/12286 and
+-- https://github.com/leanprover/lean4/pull/12423, the compact space universe `u` would default
+-- to a universe output parameter. See Note [universe output parameters and typeclass caching].
 @[univ_out_params]
 class UCompactlyGeneratedSpace (X : Type v) [t : TopologicalSpace X] : Prop where
   /-- The topology of `X` is finer than the compactly generated topology. -/

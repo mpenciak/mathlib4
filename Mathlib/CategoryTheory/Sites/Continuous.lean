@@ -118,12 +118,12 @@ variable (F F' : C ⥤ D) (τ : F ⟶ F') (e : F ≅ F') (G : D ⥤ E)
 abbrev PreservesOneHypercovers :=
   ∀ {X : C} (E : GrothendieckTopology.OneHypercover.{w} J X), E.IsPreservedBy F K
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
-the sheaf type universe `t` would default to a universe output parameter,
-causing failures when a lemma needs `IsContinuous` at two different universe levels.
-See Note [universe output parameters and typeclass caching]. -/
 /-- A functor `F` is continuous if the precomposition with `F.op` sends sheaves of `Type t`
 to sheaves. -/
+-- After https://github.com/leanprover/lean4/pull/12286 and
+-- https://github.com/leanprover/lean4/pull/12423, the sheaf type universe `t` would default
+-- to a universe output parameter, causing failures when a lemma needs `IsContinuous` at two
+-- different universe levels. See Note [universe output parameters and typeclass caching].
 @[univ_out_params]
 class IsContinuous : Prop where
   op_comp_isSheaf_of_types (G : Sheaf K (Type t)) : Presieve.IsSheaf J (F.op ⋙ G.val)
