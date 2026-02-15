@@ -40,11 +40,11 @@ section FilteredColimits
 
 section Preserves
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12423 and
-https://github.com/leanprover/lean4/pull/12286, the shape universes in
-`PreservesFilteredColimitsOfSize`, `ReflectsFilteredColimitsOfSize`,
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
+the shape universes in `PreservesFilteredColimitsOfSize`, `ReflectsFilteredColimitsOfSize`,
 `PreservesCofilteredLimitsOfSize`, and `ReflectsCofilteredLimitsOfSize` would default to
-universe output parameters, causing TC resolution cache collisions. -/
+universe output parameters.
+See Note [universe output parameters and typeclass caching]. -/
 -- This should be used with explicit universe variables.
 /-- `PreservesFilteredColimitsOfSize.{w', w} F` means that `F` sends all colimit cocones over any
 filtered diagram `J ⥤ C` to colimit cocones, where `J : Type w` with `[Category.{w'} J]`. -/

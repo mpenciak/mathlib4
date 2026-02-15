@@ -25,10 +25,10 @@ universe u v w
 
 noncomputable section
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12423 and
-https://github.com/leanprover/lean4/pull/12286, both universe parameters of `UnivLE`
-would default to universe output parameters (since it has no input parameters at all),
-causing TC resolution cache collisions. -/
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
+both universe parameters of `UnivLE` would default to universe output parameters
+(since it has no input parameters at all).
+See Note [universe output parameters and typeclass caching]. -/
 /--
 A class expressing a universe inequality. `UnivLE.{u, v}` expresses that `u ≤ v`.
 

@@ -40,10 +40,9 @@ section
 
 variable (L : C ⥤ D) [L.IsLocalization W] (X Y Z : C)
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12423 and https://github.com/leanprover/lean4/pull/12286,
-we need to use `univ_out_params` here.
-TODO: several variants work: any subset of {u₁, v₁} can be marked as univ_out_params.
-What is essential is that `w` is *not*. -/
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
+the universe `w` would default to a universe output parameter.
+See Note [universe output parameters and typeclass caching]. -/
 /-- This property holds if the type of morphisms between `X` and `Y`
 in the localized category with respect to `W : MorphismProperty C`
 is small. -/

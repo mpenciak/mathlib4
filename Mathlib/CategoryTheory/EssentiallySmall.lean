@@ -36,10 +36,10 @@ variable (C : Type u) [Category.{v} C]
 
 namespace CategoryTheory
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12423 and
-https://github.com/leanprover/lean4/pull/12286, the smallness universe `w` in
-`EssentiallySmall` and `LocallySmall` would default to a universe output parameter,
-causing TC resolution cache collisions. -/
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12286,
+the smallness universe `w` in `EssentiallySmall` and `LocallySmall` would default to a
+universe output parameter.
+See Note [universe output parameters and typeclass caching]. -/
 /-- A category is `EssentiallySmall.{w}` if there exists
 an equivalence to some `S : Type w` with `[SmallCategory S]`. -/
 @[univ_out_params, pp_with_univ]
