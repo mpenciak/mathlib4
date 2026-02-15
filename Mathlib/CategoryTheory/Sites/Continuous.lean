@@ -120,6 +120,7 @@ abbrev PreservesOneHypercovers :=
 
 /-- A functor `F` is continuous if the precomposition with `F.op` sends sheaves of `Type t`
 to sheaves. -/
+@[univ_out_params]
 class IsContinuous : Prop where
   op_comp_isSheaf_of_types (G : Sheaf K (Type t)) : Presieve.IsSheaf J (F.op ⋙ G.val)
 

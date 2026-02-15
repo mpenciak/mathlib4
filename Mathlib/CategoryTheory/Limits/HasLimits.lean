@@ -104,7 +104,7 @@ class HasLimitsOfShape : Prop where
 /-- `C` has all limits of size `v₁ u₁` (`HasLimitsOfSize.{v₁ u₁} C`)
 if it has limits of every shape `J : Type u₁` with `[Category.{v₁} J]`.
 -/
-@[pp_with_univ]
+@[univ_out_params, pp_with_univ]
 class HasLimitsOfSize (C : Type u) [Category.{v} C] : Prop where
   /-- All functors `F : J ⥤ C` from all small `J` have limits -/
   has_limits_of_shape : ∀ (J : Type u₁) [Category.{v₁} J], HasLimitsOfShape J C := by
@@ -626,7 +626,7 @@ class HasColimitsOfShape : Prop where
 /-- `C` has all colimits of size `v₁ u₁` (`HasColimitsOfSize.{v₁ u₁} C`)
 if it has colimits of every shape `J : Type u₁` with `[Category.{v₁} J]`.
 -/
-@[pp_with_univ]
+@[univ_out_params, pp_with_univ]
 class HasColimitsOfSize (C : Type u) [Category.{v} C] : Prop where
   /-- All `F : J ⥤ C` have colimits for all small `J` -/
   has_colimits_of_shape : ∀ (J : Type u₁) [Category.{v₁} J], HasColimitsOfShape J C := by

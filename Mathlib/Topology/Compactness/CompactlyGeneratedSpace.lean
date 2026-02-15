@@ -80,6 +80,7 @@ This version includes an explicit universe parameter `u` which should always be 
 intended for categorical purposes. See `CompactlyGeneratedSpace` for the version without this
 parameter, intended for topological purposes.
 -/
+@[univ_out_params]
 class UCompactlyGeneratedSpace (X : Type v) [t : TopologicalSpace X] : Prop where
   /-- The topology of `X` is finer than the compactly generated topology. -/
   le_compactlyGenerated : t ≤ compactlyGenerated.{u} X

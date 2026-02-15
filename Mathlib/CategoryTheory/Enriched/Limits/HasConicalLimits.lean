@@ -72,7 +72,7 @@ attribute [instance] HasConicalLimitsOfShape.hasConicalLimit
 `C` has all conical limits of size `v₁ u₁` (`HasLimitsOfSize.{v₁ u₁} C`)
 if it has conical limits of every shape `J : Type u₁` with `[Category.{v₁} J]`.
 -/
-@[pp_with_univ]
+@[univ_out_params, pp_with_univ]
 class HasConicalLimitsOfSize : Prop where
   /-- All functors `F : J ⥤ C` from all small `J` have conical limits -/
   hasConicalLimitsOfShape : ∀ (J : Type u₁) [Category.{v₁} J], HasConicalLimitsOfShape J V C := by

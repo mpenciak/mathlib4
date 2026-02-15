@@ -191,7 +191,7 @@ set_option mathlib.tactic.category.grind true
 /-- The typeclass `Category C` describes morphisms associated to objects of type `C`.
 The universe levels of the objects and morphisms are unconstrained, and will often need to be
 specified explicitly, as `Category.{v} C`. (See also `LargeCategory` and `SmallCategory`.) -/
-@[pp_with_univ, stacks 0014]
+@[univ_out_params, pp_with_univ, stacks 0014]
 class Category (obj : Type u) : Type max u (v + 1) extends CategoryStruct.{v} obj where
   /-- Identity morphisms are left identities for composition. -/
   id_comp : ∀ {X Y : obj} (f : X ⟶ Y), 𝟙 X ≫ f = f := by cat_disch
