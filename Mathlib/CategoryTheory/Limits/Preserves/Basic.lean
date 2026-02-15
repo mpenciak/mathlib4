@@ -72,6 +72,11 @@ class PreservesLimitsOfShape (J : Type w) [Category.{w'} J] (F : C ⥤ D) : Prop
 class PreservesColimitsOfShape (J : Type w) [Category.{w'} J] (F : C ⥤ D) : Prop where
   preservesColimit : ∀ {K : J ⥤ C}, PreservesColimit K F := by infer_instance
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12423 and
+https://github.com/leanprover/lean4/pull/12286, the shape universes `w, w'` in
+`PreservesLimitsOfSize`, `PreservesColimitsOfSize`, `ReflectsLimitsOfSize`, and
+`ReflectsColimitsOfSize` would default to universe output parameters,
+causing TC resolution cache collisions. -/
 -- This should be used with explicit universe variables.
 /-- `PreservesLimitsOfSize.{v u} F` means that `F` sends all limit cones over any
 diagram `J ⥤ C` to limit cones, where `J : Type u` with `[Category.{v} J]`. -/

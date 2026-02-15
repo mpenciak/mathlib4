@@ -71,6 +71,9 @@ lemma continuous_from_compactlyGenerated [TopologicalSpace X] [t : TopologicalSp
   rw [continuous_coinduced_dom]
   continuity
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12423 and
+https://github.com/leanprover/lean4/pull/12286, the compact space universe `u` would default to
+a universe output parameter, causing TC resolution cache collisions. -/
 /--
 A topological space `X` is compactly generated if its topology is finer than (and thus equal to)
 the compactly generated topology, i.e. it is coinduced by the continuous maps from compact

@@ -101,6 +101,9 @@ class HasLimitsOfShape : Prop where
   /-- All functors `F : J ⥤ C` from `J` have limits -/
   has_limit : ∀ F : J ⥤ C, HasLimit F := by infer_instance
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12423 and
+https://github.com/leanprover/lean4/pull/12286, the shape universes `v₁, u₁` would default
+to universe output parameters, causing TC resolution cache collisions. -/
 /-- `C` has all limits of size `v₁ u₁` (`HasLimitsOfSize.{v₁ u₁} C`)
 if it has limits of every shape `J : Type u₁` with `[Category.{v₁} J]`.
 -/
@@ -623,6 +626,9 @@ class HasColimitsOfShape : Prop where
   /-- All `F : J ⥤ C` have colimits for a fixed `J` -/
   has_colimit : ∀ F : J ⥤ C, HasColimit F := by infer_instance
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12423 and
+https://github.com/leanprover/lean4/pull/12286, the shape universes `v₁, u₁` would default
+to universe output parameters, causing TC resolution cache collisions. -/
 /-- `C` has all colimits of size `v₁ u₁` (`HasColimitsOfSize.{v₁ u₁} C`)
 if it has colimits of every shape `J : Type u₁` with `[Category.{v₁} J]`.
 -/
