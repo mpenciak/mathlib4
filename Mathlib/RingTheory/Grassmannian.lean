@@ -92,7 +92,7 @@ variable (A : Type w) [CommRing A] [Algebra R A]
 variable (B : Type w) [CommRing B] [Algebra R B]
 variable [Algebra A B] [IsScalarTower R A B]
 
-lemma baseChange_mkQ_surjective (N : G(k, (A ⊗[R] M); A)) :
+lemma baseChange_mkQ_surjective (N : G(k, A ⊗[R] M; A)) :
     Function.Surjective (N.toSubmodule.mkQ.baseChange B ∘ₗ
       (cancelBaseChange R A B B M).symm.toLinearMap) := by
   apply ((cancelBaseChange R A B B M).symm.surjective_comp (LinearMap.baseChange B N.mkQ)).mpr
@@ -102,7 +102,7 @@ lemma baseChange_mkQ_surjective (N : G(k, (A ⊗[R] M); A)) :
 /-- The map on Grassmannians induced by base change along an algebra map `A → B`.
 Given a submodule `N` of `A ⊗[R] M`, the image is the kernel of the composition
 `B ⊗[R] M ≃ B ⊗[A] (A ⊗[R] M) → B ⊗[A] ((A ⊗[R] M) ⧸ N)`. -/
-def map (N : G(k, (A ⊗[R] M); A)) : G(k, (B ⊗[R] M); B) :=
+def map (N : G(k, A ⊗[R] M; A)) : G(k, B ⊗[R] M; B) :=
   letI f := N.toSubmodule.mkQ.baseChange B ∘ₗ (cancelBaseChange R A B B M).symm.toLinearMap
   haveI equiv := f.quotKerEquivOfSurjective (baseChange_mkQ_surjective A B N)
   { toSubmodule := f.ker
@@ -156,7 +156,7 @@ theorem map_comp {A B C : CommAlgCat R}
 
 /-- The Grassmannian functor sends an `R`-algebra `A` to `G(k, A ⊗[R] M; A)`. -/
 def functor : CommAlgCat.{w, u} R ⥤ Type (max v w) where
-  obj A := G(k, (A ⊗[R] M); A)
+  obj A := G(k, A ⊗[R] M; A)
   map {A B} f := by
     letI : Algebra A B := f.hom.toAlgebra
     haveI : IsScalarTower R A B := IsScalarTower.of_algebraMap_eq' (by
@@ -172,6 +172,46 @@ def functor : CommAlgCat.{w, u} R ⥤ Type (max v w) where
     exact funext (map_comp R M k)
 
 end Functor
+
+section Chart
+
+variable (k : ℕ) (R : Type u) [CommRing R] (M : Type v) [AddCommGroup M] [Module R M]
+
+open CategoryTheory TensorProduct
+
+def chart (x : Fin k → M) :=
+  { N : G(k, M; R) // Function.Bijective <| N.mkQ ∘ₗ Fintype.linearCombination R x }
+
+variable (A : Type w) [CommRing A] [Algebra R A]
+variable (B : Type w) [CommRing B] [Algebra R B]
+variable [Algebra A B] [IsScalarTower R A B]
+
+def asdf (x : Fin k → M) : (Fin k → A) →ₗ[A] A ⊗[R] M := by
+  let tt := (Fintype.linearCombination R x).baseChange A
+  let dd : (Fin k → A) ≃ₗ[A] A ⊗[R] (Fin k → R) := (piScalarRight R A A (Fin k)).symm
+  exact tt ∘ₗ dd
+
+example {x} (N : chart k R M x) : chart k A (A ⊗[R] M) (LinearMap.lTensor x) := by sorry
+
+def chartFunctor (x : Fin k → M) : CommAlgCat.{w, u} R ⥤ Type (max v w) where
+  obj A := { N : G(k, A ⊗[R] M; A) // Function.Bijective <| N.mkQ ∘ₗ asdf k R M A x}
+  map {A B} f := by
+    letI : Algebra A B := f.hom.toAlgebra
+    haveI : IsScalarTower R A B := IsScalarTower.of_algebraMap_eq' (by
+      ext r; simp only [RingHom.comp_apply]; exact (f.hom.commutes r).symm)
+    exact fun N => ⟨Grassmannian.map A B N.val, by
+      rcases N with ⟨N, hN⟩
+      sorry
+    ⟩
+  map_id A := by
+    ext1 N
+    simp only [types_id_apply, map_id]
+  map_comp {A B C} f g := by
+    ext1 N
+    simp [map_comp]
+    sorry
+
+end Chart
 
 end Grassmannian
 
