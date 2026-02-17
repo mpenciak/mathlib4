@@ -518,6 +518,7 @@ lemma QuasiFiniteAt.of_isOpen_singleton
   exact QuasiFinite.iff_finite_comap_preimage_singleton.mpr fun _ ↦
     Set.subsingleton_of_subsingleton.finite
 
+set_option backward.isDefEq.respectTransparency false in
 attribute [local instance] RingHom.ker_isPrime in
 lemma _root_.Ideal.exists_not_mem_forall_mem_of_ne_of_liesOver
     (p : Ideal R) [p.IsPrime] (q : Ideal S) [q.IsPrime] [q.LiesOver p]
