@@ -23,6 +23,13 @@ public import Mathlib.RingTheory.TensorProduct.Finite
 - `Module.Grassmannian.functor`: The Grassmannian functor that sends an `R`-algebra `A` to the set
   `G(k, A ⊗[R] M; A)`.
 
+TODO: turn these TODOs into an actual description of what's done
+
+- Define `chart x` indexed by `x : Fin k → M` as a subtype consisting of those
+  `N ∈ G(k, A ⊗[R] M; A)` such that the composition `R^k → M → M⧸N` is an isomorphism.
+- Define `chartFunctor x` to turn `chart x` into a subfunctor of `Module.Grassmannian.functor`. This
+  will correspond to an affine open chart in the Grassmannian.
+
 ## Implementation notes
 
 In the literature, two conventions exist:
@@ -45,10 +52,6 @@ to `G(n - k, V; F)` and also to `G(k, V →ₗ[F] F; F)`, where `n` is the dimen
 
 ## TODO
 - Define and recover the subspace-definition (i.e. the first definition above).
-- Define `chart x` indexed by `x : Fin k → M` as a subtype consisting of those
-  `N ∈ G(k, A ⊗[R] M; A)` such that the composition `R^k → M → M⧸N` is an isomorphism.
-- Define `chartFunctor x` to turn `chart x` into a subfunctor of `Module.Grassmannian.functor`. This
-  will correspond to an affine open chart in the Grassmannian.
 - Grassmannians for schemes and quasi-coherent sheaf of modules.
 - Representability of `Module.Grassmannian.functor R M k`.
 -/
@@ -194,12 +197,12 @@ def asdf (x : Fin k → M) : (Fin k → A) →ₗ[A] A ⊗[R] M := by
 def chartFunctor (x : Fin k → M) : CommAlgCat.{w, u} R ⥤ Type (max v w) where
   obj A := { N : G(k, A ⊗[R] M; A) // Function.Bijective <| N.mkQ ∘ₗ asdf k R M A x}
   map {A B} f := by
-    letI : Algebra A B := f.hom.toAlgebra
-    haveI : IsScalarTower R A B := IsScalarTower.of_algebraMap_eq' (by
-      ext r; simp only [RingHom.comp_apply]; exact (f.hom.commutes r).symm)
+    algebraize [f.hom.toRingHom]
     exact fun N => ⟨Grassmannian.map A B N.val, by
       rcases N with ⟨N, hN⟩
-      sorry
+      unfold asdf map
+      simp
+      sorry -- TODO: This sorry
     ⟩
   map_id A := by
     ext1 N
@@ -216,6 +219,8 @@ def chartFunctor (x : Fin k → M) : CommAlgCat.{w, u} R ⥤ Type (max v w) wher
 def subFunctorNatTrans (x : Fin k → M) : chartFunctor k R M x ⟶ functor R M k where
   app _ N := N.val
   naturality _ _ _ := rfl
+
+-- TODO: Figure out how to say this is a subfunctor
 
 end Chart
 
