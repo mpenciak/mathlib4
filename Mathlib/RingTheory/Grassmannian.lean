@@ -6,6 +6,7 @@ Authors: Kenny Lau
 module
 
 public import Mathlib.Algebra.Category.CommAlgCat.Basic
+public import Mathlib.CategoryTheory.Subfunctor.Basic
 public import Mathlib.LinearAlgebra.Isomorphisms
 public import Mathlib.RingTheory.Spectrum.Prime.FreeLocus
 public import Mathlib.RingTheory.TensorProduct.Finite
@@ -194,15 +195,89 @@ def asdf (x : Fin k → M) : (Fin k → A) →ₗ[A] A ⊗[R] M := by
   let dd : (Fin k → A) ≃ₗ[A] A ⊗[R] (Fin k → R) := (piScalarRight R A A (Fin k)).symm
   exact tt ∘ₗ dd
 
+/-- The chart condition is preserved under base change: if the chart map
+for `N` over `A` is bijective, then it is also bijective for
+`map A B N` over `B`. The proof factors the map over `B` as a
+composition of three bijections:
+1. `(piScalarRight A B B).symm`
+2. base change of the original iso from `hN`
+3. `quotKerEquivOfSurjective.symm` -/
+lemma map_chart_bijective (x : Fin k → M)
+    (N : G(k, A ⊗[R] M; A)) (hN : Function.Bijective (N.mkQ ∘ₗ asdf k R M A x)) :
+    Function.Bijective ((map A B N).mkQ ∘ₗ asdf k R M B x) := by
+  open TensorProduct AlgebraTensorModule in
+  -- The surjective map whose kernel defines map A B N
+  let g := N.toSubmodule.mkQ.baseChange B ∘ₗ (cancelBaseChange R A B B M).symm.toLinearMap
+  have hg_surj : Function.Surjective g :=
+    baseChange_mkQ_surjective A B N
+  -- Build the composed equivalence
+  let e := LinearEquiv.ofBijective (N.mkQ ∘ₗ asdf k R M A x) hN
+  let eB := LinearEquiv.baseChange A B _ _ e
+  let totalEquiv : (Fin k → B) ≃ₗ[B] (B ⊗[R] M ⧸ (map A B N).toSubmodule) :=
+    (piScalarRight A B B (Fin k)).symm ≪≫ₗ eB ≪≫ₗ
+      (g.quotKerEquivOfSurjective hg_surj).symm
+  -- It suffices to show this equiv agrees with the goal map
+  suffices h : ⇑totalEquiv = ⇑((map A B N).mkQ ∘ₗ asdf k R M B x) from
+    h ▸ totalEquiv.bijective
+  -- Both sides send v : Fin k → B to mkQ(∑ᵢ v(i) ⊗ x(i)).
+  -- This boils down to: quotKerEquiv.symm (g z) = mkQ z, and a naturality
+  -- / compatibility statement between the various base change constructions.'
+  funext v
+  -- Unfold the LHS: totalEquiv v = quotEquiv.symm (eB (piScalarRight.symm v))
+  -- Unfold the RHS: (map A B N).mkQ (asdf B x v) = g.ker.mkQ (asdf B x v)
+  -- These are equal because:
+  -- (a) quotEquiv.symm (g z) = g.ker.mkQ z
+  --     (by quotKerEquivOfSurjective_symm_apply)
+  -- (b) eB (piScalarRight A B B .symm v) = g (asdf B x v)
+  --     The base-changed iso composed with piScalarRight
+  --     equals g ∘ asdf. This follows from:
+  --     - baseChange_baseChange naturality
+  --     - lTensor_comp: baseChange preserves composition
+  --     - piScalarRight compatibility with cancelBaseChange
+  -- The LHS unfolds to quotEquiv.symm (eB (piScalarRight.symm v))
+  -- The RHS unfolds to g.ker.mkQ (asdf B x v)
+  -- Step: show eB (piScalarRight.symm v) = g (asdf B x v), then use quotKerEquiv_symm_apply
+  change (g.quotKerEquivOfSurjective hg_surj).symm
+      (eB ((piScalarRight A B B (Fin k)).symm v)) =
+    (map A B N).toSubmodule.mkQ (asdf k R M B x v)
+  suffices key : eB ((piScalarRight A B B (Fin k)).symm v) = g (asdf k R M B x v) by
+    rw [key, LinearMap.quotKerEquivOfSurjective_symm_apply]; rfl
+  -- Prove: eB (piScalarRight.symm v) = g (asdf B x v)
+  -- Both sides are B-linear in v, so it suffices to check on Pi.single j 1.
+  -- Both sides then evaluate to 1 ⊗ N.mkQ(1 ⊗ x(j)) in B ⊗[A] (quotient).
+  suffices hgen : ∀ j : Fin k,
+      eB ((piScalarRight A B B (Fin k)).symm (Pi.single j (1 : B))) =
+      g (asdf k R M B x (Pi.single j 1)) by
+    -- Extend from generators to all v by linearity
+    have hv : v = ∑ j : Fin k, v j • Pi.single j 1 := by
+      ext i; simp [Finset.sum_apply, Pi.single_apply]
+    conv_lhs => rw [hv]
+    conv_rhs => rw [hv]
+    simp only [map_sum, map_smul, hgen]
+  -- Check on each standard basis element
+  intro j
+  simp only [piScalarRight_symm_single, eB, e, LinearEquiv.baseChange_tmul,
+    LinearEquiv.ofBijective_apply, LinearMap.comp_apply]
+  -- LHS is now: 1 ⊗ N.mkQ (asdf A x (Pi.single j 1))
+  -- RHS needs: g (asdf B x (Pi.single j 1))
+  -- Unfold asdf on both sides: asdf S x (Pi.single j 1) = 1 ⊗ x j
+  unfold asdf
+  simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, piScalarRight_symm_single,
+    LinearMap.baseChange_tmul, Fintype.linearCombination_apply_single, one_smul]
+  -- Now LHS: 1 ⊗ N.mkQ (1 ⊗ x j)
+  -- RHS: g (1 ⊗ x j) = N.mkQ.baseChange B (cancelBaseChange.symm (1 ⊗ x j))
+  --     = N.mkQ.baseChange B (1 ⊗ (1 ⊗ x j)) = 1 ⊗ N.mkQ (1 ⊗ x j)
+  simp only [g, LinearMap.comp_apply, LinearEquiv.coe_coe,
+    AlgebraTensorModule.cancelBaseChange_symm_tmul, LinearMap.baseChange_tmul,
+    Submodule.mkQ_apply]
+
 def chartFunctor (x : Fin k → M) : CommAlgCat.{w, u} R ⥤ Type (max v w) where
   obj A := { N : G(k, A ⊗[R] M; A) // Function.Bijective <| N.mkQ ∘ₗ asdf k R M A x}
   map {A B} f := by
     algebraize [f.hom.toRingHom]
     exact fun N => ⟨Grassmannian.map A B N.val, by
       rcases N with ⟨N, hN⟩
-      unfold asdf map
-      simp
-      sorry -- TODO: This sorry
+      exact map_chart_bijective k R M A B x N hN
     ⟩
   map_id A := by
     ext1 N
@@ -215,6 +290,12 @@ def chartFunctor (x : Fin k → M) : CommAlgCat.{w, u} R ⥤ Type (max v w) wher
       simp [AlgHom.comp_apply])
     ext1 N
     exact Subtype.ext (map_comp R M k N.val)
+
+#check Subfunctor
+
+def chartSubFunctor (x : Fin k → M) : Subfunctor (functor R M k) where
+  obj A := { N : G(k, A ⊗[R] M; A) | Function.Bijective <| N.mkQ ∘ₗ asdf k R M A x}
+  map := sorry
 
 def subFunctorNatTrans (x : Fin k → M) : chartFunctor k R M x ⟶ functor R M k where
   app _ N := N.val
