@@ -191,8 +191,6 @@ def asdf (x : Fin k → M) : (Fin k → A) →ₗ[A] A ⊗[R] M := by
   let dd : (Fin k → A) ≃ₗ[A] A ⊗[R] (Fin k → R) := (piScalarRight R A A (Fin k)).symm
   exact tt ∘ₗ dd
 
-example {x} (N : chart k R M x) : chart k A (A ⊗[R] M) (LinearMap.lTensor x) := by sorry
-
 def chartFunctor (x : Fin k → M) : CommAlgCat.{w, u} R ⥤ Type (max v w) where
   obj A := { N : G(k, A ⊗[R] M; A) // Function.Bijective <| N.mkQ ∘ₗ asdf k R M A x}
   map {A B} f := by
@@ -207,9 +205,17 @@ def chartFunctor (x : Fin k → M) : CommAlgCat.{w, u} R ⥤ Type (max v w) wher
     ext1 N
     simp only [types_id_apply, map_id]
   map_comp {A B C} f g := by
+    algebraize [f.hom.toRingHom, g.hom.toRingHom, (f ≫ g).hom.toRingHom]
+    haveI : IsScalarTower A B C := IsScalarTower.of_algebraMap_eq' (by
+      ext a
+      change ((g.hom.comp f.hom) a) = g.hom (f.hom a)
+      simp [AlgHom.comp_apply])
     ext1 N
-    simp [map_comp]
-    sorry
+    exact Subtype.ext (map_comp R M k N.val)
+
+def subFunctorNatTrans (x : Fin k → M) : chartFunctor k R M x ⟶ functor R M k where
+  app _ N := N.val
+  naturality _ _ _ := rfl
 
 end Chart
 
