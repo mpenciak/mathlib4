@@ -55,7 +55,7 @@ theorem Monic.as_sum (hp : p.Monic) :
 
 theorem Monic.map [Semiring S] (f : R →+* S) (hp : Monic p) : Monic (p.map f) :=
   subsingleton_or_nontrivial S |>.elim (·.elim ..) fun _ ↦
-    f.map_one ▸ hp ▸ leadingCoeff_map_eq_of_isUnit_leadingCoeff _ <| hp ▸ isUnit_one
+    f.map_one ▸ hp ▸ leadingCoeff_map_eq_of_isUnit_leadingCoeff _ <| isUnit_one
 
 theorem monic_C_mul_of_mul_leadingCoeff_eq_one {b : R} (hp : b * p.leadingCoeff = 1) :
     Monic (C b * p) := by
