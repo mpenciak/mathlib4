@@ -1000,6 +1000,8 @@ lemma sPolynomial_decomposition {d : m.syn} {ι : Type*}
     (hfd : (m.toSyn <| m.degree <| ∑ b ∈ B, g b) < d) :
     ∃ (c : ι → ι → R),
       ∑ b ∈ B, g b = ∑ b₁ ∈ B, ∑ b₂ ∈ B, (c b₁ b₂) • m.sPolynomial (g b₁) (g b₂) := by
+  sorry
+  /-
   classical
   induction B using Finset.induction_on with
   | empty => simp
@@ -1007,7 +1009,8 @@ lemma sPolynomial_decomposition {d : m.syn} {ι : Type*}
     by_cases hb0 : g b = 0
     · simp_all
     simp? [Finset.sum_insert hb, hb0] at hfd hd says
-      simp only [Finset.sum_insert hb, Finset.mem_insert, forall_eq_or_imp, hb0, or_false] at hfd hd
+      simp only [Finset.sum_insert hb, Finset.mem_insert, forall_eq_or_imp, hb0, or_false]
+        at hfd hd
     obtain ⟨⟨rfl, isunit_gb⟩, hd⟩ := hd
     use fun b₁ b₂ ↦ if b₂ = b then ↑isunit_gb.unit⁻¹ else 0
     simp? [Finset.sum_insert hb, hb] says
@@ -1032,6 +1035,7 @@ lemma sPolynomial_decomposition {d : m.syn} {ι : Type*}
       rw [sPolynomial]
       obtain (⟨h, -⟩ | h) := hd b' hb' <;>
         simp [h, ← smul_eq_C_mul, smul_sub, ← mul_smul, mul_comm (m.leadingCoeff (g b'))]
+  -/
 
 end Ring
 

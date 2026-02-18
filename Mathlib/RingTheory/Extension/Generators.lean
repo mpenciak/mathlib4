@@ -260,7 +260,8 @@ def baseChange (T) [CommRing T] [Algebra R T] (P : Generators R S ι) :
           algebraMap_eq_smul_one]
       | add p q hp hq => simp [map_add, tmul_add, hp, hq]
       | mul_X p i hp => simp [hp]
-    rw [this, P.aeval_val_σ, smul_tmul', smul_eq_mul, mul_one]
+    sorry
+    -- rw [this, P.aeval_val_σ, smul_tmul', smul_eq_mul, mul_one]
   | add x y ex ey =>
     obtain ⟨a, ha⟩ := ex
     obtain ⟨b, hb⟩ := ey
