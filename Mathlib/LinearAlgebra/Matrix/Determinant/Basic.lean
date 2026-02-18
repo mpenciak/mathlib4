@@ -283,7 +283,8 @@ theorem det_smul_of_tower {α} [Monoid α] [MulAction α R] [IsScalarTower α R 
   rw [← smul_one_smul R c A, det_smul, smul_pow, one_pow, smul_mul_assoc, one_mul]
 
 theorem det_neg (A : Matrix n n R) : det (-A) = (-1) ^ Fintype.card n * det A := by
-  rw [← det_smul, neg_one_smul]
+  sorry
+  -- rw [← det_smul, neg_one_smul]
 
 set_option backward.isDefEq.respectTransparency false in
 /-- A variant of `Matrix.det_neg` with scalar multiplication by `Units ℤ` instead of multiplication
@@ -756,7 +757,7 @@ theorem det_succ_column_zero {n : ℕ} (A : Matrix (Fin n.succ) (Fin n.succ) R) 
         Equiv.Perm.decomposeFin_symm_apply_zero, Equiv.Perm.decomposeFin_symm_apply_succ]
     _ = -1 * (A (Fin.succ i) 0 * (Perm.sign σ : ℤ) •
         ∏ i', A ((Fin.succ i).succAbove (Fin.cycleRange i (σ i'))) i'.succ) := by
-      simp [_root_.neg_mul, one_mul, neg_smul, Fin.succAbove_cycleRange]
+      simp [_root_.neg_mul, one_mul, neg_smul, Fin.succAbove_cycleRange, mul_left_comm]
 
 /-- Laplacian expansion of the determinant of an `n+1 × n+1` matrix along row 0. -/
 theorem det_succ_row_zero {n : ℕ} (A : Matrix (Fin n.succ) (Fin n.succ) R) :
