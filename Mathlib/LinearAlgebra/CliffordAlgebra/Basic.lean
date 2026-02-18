@@ -96,6 +96,10 @@ instance {R S A M} [CommSemiring R] [CommSemiring S] [AddCommGroup M] [CommRing 
     IsScalarTower R S (CliffordAlgebra Q) :=
   RingQuot.instIsScalarTower _
 
+#adaptation_note /-- Needed after leanprover/lean4#12564 -/
+instance : Module R (CliffordAlgebra Q) :=
+  inferInstanceAs <| Module R (RingQuot (CliffordAlgebra.Rel Q))
+
 /-- The canonical linear map `M →ₗ[R] CliffordAlgebra Q`.
 -/
 def ι : M →ₗ[R] CliffordAlgebra Q :=
