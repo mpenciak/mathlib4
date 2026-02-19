@@ -28,15 +28,11 @@ universe v u
 
 variable (n : Type v) (S : Scheme.{max u v})
 
-local notation3 "ℤ[" n "]" => CommRingCat.of (MvPolynomial n (ULift ℤ))
-local notation3 "ℤ[" n "].{" u ", " v "}" => CommRingCat.of (MvPolynomial n (ULift.{max u v} ℤ))
-
-#check MvPolynomial.gradedAlgebra
-#check homogeneousSubmodule
+local notation3 "ℤ[" n "].{"u "," v"}" => homogeneousSubmodule n (ULift.{max u v} ℤ)
 
 def ProjectiveSpace (n : Type v) (S : Scheme.{max u v}) : Scheme.{max u v} :=
-  haveI := @MvPolynomial.gradedAlgebra n (ULift.{max u v} ℤ)
-  pullback (terminal.from S) (terminal.from (Proj ℤ[n].{u, v}))
+  haveI : GradedAlgebra ℤ[n].{u, v} := MvPolynomial.gradedAlgebra
+  pullback (terminal.from S) (terminal.from <| Proj <| ℤ[n].{u,v})
 
 namespace ProjectiveSpace
 
